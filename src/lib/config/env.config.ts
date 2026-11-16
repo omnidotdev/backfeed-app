@@ -27,10 +27,10 @@ export const AUTH_INTERNAL_URL =
     ? process.env.AUTH_INTERNAL_URL || AUTH_BASE_URL
     : AUTH_BASE_URL;
 
-// Backfeed's Aether service key. Checkout, the subscription lookup, and the
-// billing portal act for the signed-in user, whose token is not minted for
-// Aether, so Aether only accepts it alongside this key. Server-only: guarded so
-// the secret is never read client-side and never bundled into the browser
+// Backfeed's Aether service key. The subscription lookup acts for the
+// signed-in user, whose token is not minted for Aether, so Aether only accepts
+// it alongside this key. Server-only: guarded so the secret is never read
+// client-side and never bundled into the browser
 export const BILLING_SERVICE_API_KEY =
   typeof window === "undefined"
     ? process.env.BILLING_SERVICE_API_KEY
@@ -77,8 +77,8 @@ if (
   BILLING_BASE_URL &&
   !BILLING_SERVICE_API_KEY
 )
-  console.warn(
-    "BILLING_SERVICE_API_KEY not set, checkout and billing management disabled",
-  );
+  console.warn("BILLING_SERVICE_API_KEY not set, subscription lookup disabled");
 if (!ACCOUNT_URL)
-  console.warn("ACCOUNT_URL not set, manage-account link disabled");
+  console.warn(
+    "ACCOUNT_URL not set, manage-account and plan purchase links disabled",
+  );

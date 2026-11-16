@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import app from "@/lib/config/app.config";
 import billing, { type Subscription } from "@/lib/providers/billing";
 import { authMiddleware } from "@/server/middleware";
 
@@ -13,31 +12,10 @@ const organizationSchema = z.object({
   organizationId: z.string(),
 });
 
-const billingPortalSchema = z.object({
-  organizationId: z.string(),
-  returnUrl: z.url(),
-});
-
-const checkoutWithWorkspaceSchema = z
-  .object({
-    priceId: z.string().startsWith("price_"),
-    successUrl: z.string().url(),
-    cancelUrl: z.string().url(),
-    // Either workspaceId or createWorkspace must be provided
-    workspaceId: z.string().uuid().optional(),
-    createWorkspace: z
-      .object({
-        name: z.string().min(1).max(100),
-        slug: z.string().min(1).max(100).optional(),
-      })
-      .optional(),
-  })
-  .refine((data) => data.workspaceId || data.createWorkspace, {
-    message: "Either workspaceId or createWorkspace is required",
-  });
-
 /**
- * Get subscription details for an organization via billing service.
+ * Get subscription details for an organization via billing service. Buying,
+ * changing, canceling, and renewing a plan happen on the Omni account hub (see
+ * `lib/billing/hubLinks`), not here
  */
 export const getSubscription = createServerFn({ method: "POST" })
   .inputValidator((data) => organizationSchema.parse(data))
@@ -50,78 +28,4 @@ export const getSubscription = createServerFn({ method: "POST" })
       data.organizationId,
       context.session.accessToken,
     );
-  });
-
-/**
- * Cancel a subscription for an organization via billing service.
- * @knipignore - exported for future subscription cancellation UI
- */
-export const revokeSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => organizationSchema.parse(data))
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.session?.accessToken) throw new Error("Unauthorized");
-
-    return billing.cancelSubscription(
-      "organization",
-      data.organizationId,
-      context.session.accessToken,
-    );
-  });
-
-/**
- * Get billing portal URL.
- * This creates a Stripe billing portal session through Aether,
- * which looks up the billing account by organization ID.
- */
-export const getBillingPortalUrl = createServerFn({ method: "POST" })
-  .inputValidator((data) => billingPortalSchema.parse(data))
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.session?.accessToken) throw new Error("Unauthorized");
-
-    return billing.getBillingPortalUrl(
-      "organization",
-      data.organizationId,
-      "backfeed",
-      data.returnUrl,
-      context.session.accessToken,
-    );
-  });
-
-/**
- * Renew a subscription (remove scheduled cancellation) via billing service.
- */
-export const renewSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => organizationSchema.parse(data))
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.session?.accessToken) throw new Error("Unauthorized");
-
-    await billing.renewSubscription(
-      "organization",
-      data.organizationId,
-      context.session.accessToken,
-    );
-  });
-
-/**
- * Create a checkout session with workspace creation/selection.
- * Routes through Aether for orchestration.
- */
-export const createCheckoutWithWorkspace = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .inputValidator((data) => checkoutWithWorkspaceSchema.parse(data))
-  .handler(async ({ data, context }) => {
-    if (!context.session?.accessToken) throw new Error("Unauthorized");
-
-    return billing.createCheckoutWithWorkspace({
-      appId: app.name.toLowerCase(),
-      priceId: data.priceId,
-      successUrl: data.successUrl,
-      cancelUrl: data.cancelUrl,
-      accessToken: context.session.accessToken,
-      workspaceId: data.workspaceId,
-      createWorkspace: data.createWorkspace,
-    });
   });

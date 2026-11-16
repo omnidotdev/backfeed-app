@@ -1,8 +1,7 @@
 import { Format } from "@ark-ui/react";
 import { Portal } from "@ark-ui/react/portal";
 import { ManageTeamLink } from "@omnidotdev/providers/react";
-import { useMutation } from "@tanstack/react-query";
-import { getRouteApi, useNavigate } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { LuCheck, LuClockAlert, LuExternalLink } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
@@ -17,16 +16,12 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
+import { manageSubscriptionUrl, upgradePlanUrl } from "@/lib/billing/hubLinks";
 import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import getTierFromEntitlements from "@/lib/util/getTierFromEntitlements";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
 import cn from "@/lib/utils";
-import {
-  createCheckoutWithWorkspace,
-  getBillingPortalUrl,
-  renewSubscription,
-} from "@/server/functions/subscriptions";
 
 import type { ExpandedProductPrice } from "@/server/functions/prices";
 
@@ -43,14 +38,14 @@ interface Props {
  * Workspace settings.
  *
  * Organization name/slug are managed by Gatekeeper (IDP), not this app.
- * This component handles subscription management at the organization level.
+ * This component shows the workspace's plan; upgrading and managing it
+ * (change, cancel, renew, payment method, invoices) happen on the Omni account
+ * hub, which returns to this page
  */
 const WorkspaceSettings = ({ prices }: Props) => {
   const { workspaceSlug } = settingsRoute.useParams();
-  const { isOwner, organizationId, workspaceName } =
-    settingsRoute.useRouteContext();
+  const { isOwner, workspaceName } = settingsRoute.useRouteContext();
   const { subscription, entitlements } = settingsRoute.useLoaderData();
-  const navigate = useNavigate();
 
   const subscriptionPrice = prices.find(
     (price) =>
@@ -65,39 +60,26 @@ const WorkspaceSettings = ({ prices }: Props) => {
     ? (subscriptionPrice?.metadata?.tier ?? "pro")
     : (getTierFromEntitlements(entitlements) ?? "free");
 
-  const {
-    mutateAsync: createSubscription,
-    isPending: isCreateSubscriptionPending,
-  } = useMutation({
-    // Subscribes the workspace itself (Aether checks the user is its owner/admin)
-    mutationFn: async ({ priceId }: { priceId: string }) => {
-      const { checkoutUrl } = await createCheckoutWithWorkspace({
-        data: {
-          priceId,
-          workspaceId: organizationId,
-          successUrl: `${BASE_URL}/@${workspaceSlug}/~/settings`,
-          cancelUrl: `${BASE_URL}/@${workspaceSlug}/~/settings`,
-        },
-      });
+  const manageHref = manageSubscriptionUrl(
+    ACCOUNT_URL,
+    BASE_URL,
+    workspaceSlug,
+  );
 
-      return checkoutUrl;
-    },
-    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
-  });
+  // Buy the picked plan for this workspace on the account hub, which confirms
+  // it, runs checkout, and returns to this page
+  const upgradeToPrice = (priceId: string) => {
+    const price = prices.find((p) => p.id === priceId);
+    if (!price) return;
 
-  const { mutateAsync: openBillingPortal } = useMutation({
-    mutationFn: async () => {
-      const portalUrl = await getBillingPortalUrl({
-        data: {
-          organizationId,
-          returnUrl: `${BASE_URL}/@${workspaceSlug}/~/settings`,
-        },
-      });
+    const href = upgradePlanUrl(ACCOUNT_URL, BASE_URL, {
+      plan: price.metadata.tier,
+      interval: price.recurring?.interval === "year" ? "year" : "month",
+      workspaceSlug,
+    });
 
-      return portalUrl;
-    },
-    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
-  });
+    if (href) window.location.assign(href);
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -158,31 +140,19 @@ const WorkspaceSettings = ({ prices }: Props) => {
           </div>
 
           {subscription ? (
-            <Button
-              className="w-fit"
-              onClick={async () => {
-                if (subscription.cancelAt) {
-                  await renewSubscription({
-                    data: { organizationId },
-                  });
-                } else {
-                  await openBillingPortal();
-                }
-              }}
-            >
-              {subscription.cancelAt ? "Renew" : "Manage"} Subscription
-            </Button>
-          ) : (
-            <MenuRoot
-              onSelect={({ value }) => createSubscription({ priceId: value })}
-            >
+            manageHref ? (
+              <Button className="w-fit" asChild>
+                <a href={manageHref}>Manage Subscription</a>
+              </Button>
+            ) : (
+              <p className="text-foreground-subtle text-sm">
+                Managing the plan is unavailable right now.
+              </p>
+            )
+          ) : ACCOUNT_URL ? (
+            <MenuRoot onSelect={({ value }) => upgradeToPrice(value)}>
               <MenuTrigger asChild>
-                <Button
-                  className="w-fit"
-                  disabled={isCreateSubscriptionPending}
-                >
-                  Upgrade Plan
-                </Button>
+                <Button className="w-fit">Upgrade Plan</Button>
               </MenuTrigger>
 
               <Portal>
@@ -245,6 +215,10 @@ const WorkspaceSettings = ({ prices }: Props) => {
                 </MenuPositioner>
               </Portal>
             </MenuRoot>
+          ) : (
+            <p className="text-foreground-subtle text-sm">
+              Upgrading the plan is unavailable right now.
+            </p>
           )}
         </SectionContainer>
       )}

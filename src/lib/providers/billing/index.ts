@@ -13,9 +13,6 @@ import {
 
 export type {
   BillingProvider,
-  CheckoutParams,
-  CheckoutWithWorkspaceParams,
-  CheckoutWithWorkspaceResponse,
   Entitlement,
   EntitlementsResponse,
   Price,
