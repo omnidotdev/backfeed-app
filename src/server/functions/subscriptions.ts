@@ -18,12 +18,6 @@ const billingPortalSchema = z.object({
   returnUrl: z.url(),
 });
 
-const createSubscriptionSchema = z.object({
-  organizationId: z.string(),
-  priceId: z.string().startsWith("price_"),
-  successUrl: z.url(),
-});
-
 const checkoutWithWorkspaceSchema = z
   .object({
     priceId: z.string().startsWith("price_"),
@@ -93,24 +87,6 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
       data.returnUrl,
       context.session.accessToken,
     );
-  });
-
-export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
-  .inputValidator((data) => createSubscriptionSchema.parse(data))
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    return billing.createCheckoutSession({
-      priceId: data.priceId,
-      successUrl: data.successUrl,
-      customerEmail: context.session.user.email!,
-      customerName: context.session.user.name ?? undefined,
-      metadata: {
-        externalId: context.session.user.identityProviderId!,
-        app_id: "backfeed",
-        entity_type: "organization",
-        entity_id: data.organizationId,
-      },
-    });
   });
 
 /**

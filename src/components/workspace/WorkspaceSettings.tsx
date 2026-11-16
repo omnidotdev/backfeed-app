@@ -23,8 +23,8 @@ import getTierFromEntitlements from "@/lib/util/getTierFromEntitlements";
 import { FREE_PRODUCT_DETAILS, sortBenefits } from "@/lib/util/pricing";
 import cn from "@/lib/utils";
 import {
+  createCheckoutWithWorkspace,
   getBillingPortalUrl,
-  getCreateSubscriptionUrl,
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
@@ -69,12 +69,14 @@ const WorkspaceSettings = ({ prices }: Props) => {
     mutateAsync: createSubscription,
     isPending: isCreateSubscriptionPending,
   } = useMutation({
+    // Subscribes the workspace itself (Aether checks the user is its owner/admin)
     mutationFn: async ({ priceId }: { priceId: string }) => {
-      const checkoutUrl = await getCreateSubscriptionUrl({
+      const { checkoutUrl } = await createCheckoutWithWorkspace({
         data: {
           priceId,
-          organizationId,
+          workspaceId: organizationId,
           successUrl: `${BASE_URL}/@${workspaceSlug}/~/settings`,
+          cancelUrl: `${BASE_URL}/@${workspaceSlug}/~/settings`,
         },
       });
 
