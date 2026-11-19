@@ -1,68 +1,41 @@
 import { accountUrl } from "@omnidotdev/providers/react";
 import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@omnidotdev/thornberry/avatar";
+  AccountMenu,
+  AccountMenuItem,
+} from "@omnidotdev/thornberry/account-menu";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { FiLogOut, FiUser } from "react-icons/fi";
-import { HiChevronUpDown } from "react-icons/hi2";
-import { LuExternalLink } from "react-icons/lu";
-import { useOnClickOutside } from "usehooks-ts";
+import { FiUser } from "react-icons/fi";
 
-import { Button } from "@/components/ui/button";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
-import {
-  MenuContent,
-  MenuItem,
-  MenuItemGroup,
-  MenuItemGroupLabel,
-  MenuPositioner,
-  MenuRoot,
-  MenuSeparator,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { ACCOUNT_URL, isDevEnv } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
-import type { RefObject } from "react";
-
 /**
- * User account information.
+ * The signed-in user's account menu: the standard Omni account menu, as the
+ * header avatar on wide screens and as a full-width row in the phone sidebar
  */
 const AccountInformation = () => {
   const { session } = useRouteContext({ from: "__root__" });
   const navigate = useNavigate();
-  const isSmallViewport = useViewportSize({
+  const isWideViewport = useViewportSize({
     minWidth: "40rem",
   });
-
-  const userActions = useRef<HTMLDivElement>(null);
-  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
 
   const { setIsOpen: setIsMobileSidebarOpen } = useDialogStore({
     type: DialogType.MobileSidebar,
   });
 
+  if (!session) return null;
+
   const handleProfileClick = () => {
-    setIsMobileProfileOpen(false);
     setIsMobileSidebarOpen(false);
     navigate({
       to: "/profile/$userId/account",
-      params: { userId: session?.user.identityProviderId! },
+      params: { userId: session.user.identityProviderId! },
     });
   };
-
-  useOnClickOutside(userActions as RefObject<HTMLElement>, () =>
-    setIsMobileProfileOpen(false),
-  );
 
   const handleLogout = async () => {
     try {
@@ -72,125 +45,27 @@ const AccountInformation = () => {
     }
   };
 
-  const initial = session?.user?.username?.[0]?.toUpperCase();
-
-  if (isSmallViewport) {
-    return (
-      <MenuRoot positioning={{ shift: 32 }}>
-        <MenuTrigger asChild>
-          <Button variant="ghost" className="rounded-full px-0">
-            <AvatarRoot size="md">
-              <AvatarImage src={session?.user?.image ?? undefined} alt="" />
-              <AvatarFallback>{initial}</AvatarFallback>
-            </AvatarRoot>
-          </Button>
-        </MenuTrigger>
-
-        <MenuPositioner>
-          <MenuContent className="min-w-32">
-            <MenuItemGroup>
-              <MenuItemGroupLabel>{session?.user?.username}</MenuItemGroupLabel>
-
-              <MenuSeparator />
-
-              <MenuItem value="profile" onClick={handleProfileClick}>
-                <FiUser />
-                {app.auth.profile.label}
-              </MenuItem>
-
-              {ACCOUNT_URL && (
-                <>
-                  <MenuSeparator />
-
-                  <MenuItem value="manage-account" asChild>
-                    <a
-                      href={accountUrl(ACCOUNT_URL)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <LuExternalLink />
-                      Manage account
-                    </a>
-                  </MenuItem>
-                </>
-              )}
-
-              <MenuSeparator />
-
-              <MenuItem
-                value="logout"
-                onClick={handleLogout}
-                className="text-primary dark:text-[var(--colors-brand-primary-400)]"
-              >
-                <FiLogOut className="text-destructive" />
-                {app.auth.signOut.label}
-              </MenuItem>
-            </MenuItemGroup>
-          </MenuContent>
-        </MenuPositioner>
-      </MenuRoot>
-    );
-  }
-
   return (
-    <div ref={userActions} className="flex flex-col justify-end">
-      <CollapsibleRoot open={isMobileProfileOpen}>
-        <CollapsibleContent>
-          <div className="flex flex-col gap-2">
-            <Button onClick={handleProfileClick}>
-              <FiUser />
-              {app.auth.profile.label}
-            </Button>
-
-            {ACCOUNT_URL && (
-              <a
-                href={accountUrl(ACCOUNT_URL)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button variant="outline" className="w-full">
-                  <LuExternalLink />
-                  Manage account
-                </Button>
-              </a>
-            )}
-
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              className="border-primary text-primary dark:text-[var(--colors-brand-primary-400)]"
-            >
-              <FiLogOut className="text-destructive" />
-              {app.auth.signOut.label}
-            </Button>
-          </div>
-        </CollapsibleContent>
-      </CollapsibleRoot>
-
-      <Button
-        variant="ghost"
-        className="h-auto justify-between py-3 outline outline-background-subtle"
-        onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
-      >
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-2">
-            <AvatarRoot size="md">
-              <AvatarImage src={session?.user?.image ?? undefined} alt="" />
-              <AvatarFallback>{initial}</AvatarFallback>
-            </AvatarRoot>
-
-            <div className="flex flex-col gap-1 text-left">
-              <span className="leading-none">{session?.user?.name}</span>
-              <span className="text-muted-foreground text-xs leading-none">
-                {session?.user?.email}
-              </span>
-            </div>
-          </div>
-
-          <HiChevronUpDown className="size-6" />
-        </div>
-      </Button>
-    </div>
+    <AccountMenu
+      variant={isWideViewport ? "avatar" : "sidebar"}
+      user={{
+        // The username is the user's handle here, so it heads the menu when
+        // no display name is set
+        name: session.user.name || session.user.username,
+        email: session.user.email,
+        image: session.user.image,
+      }}
+      onSignOut={handleLogout}
+      manageAccountUrl={accountUrl(ACCOUNT_URL) || undefined}
+      signOutLabel={app.auth.signOut.label}
+      // Opens upward from the bottom of the phone sidebar
+      positioning={isWideViewport ? undefined : { placement: "top" }}
+    >
+      <AccountMenuItem value="profile" onSelect={handleProfileClick}>
+        <FiUser />
+        {app.auth.profile.label}
+      </AccountMenuItem>
+    </AccountMenu>
   );
 };
 

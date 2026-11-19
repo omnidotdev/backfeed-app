@@ -32,6 +32,7 @@ const WorkspaceSwitcher = () => {
       workspaces={workspaces.map((workspace) => ({
         id: workspace.id,
         name: workspace.name,
+        slug: workspace.slug,
         logo: workspace.logo,
       }))}
       currentWorkspaceId={currentWorkspace.id}
