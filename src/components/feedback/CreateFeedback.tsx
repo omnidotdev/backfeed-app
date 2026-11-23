@@ -1,4 +1,13 @@
-import { Portal } from "@ark-ui/react/portal";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
+import { Label } from "@omnidotdev/thornberry/label";
 import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
@@ -11,14 +20,6 @@ import CharacterLimit from "@/components/core/CharacterLimit";
 import AttachmentUploader from "@/components/feedback/AttachmentUploader";
 import EditorHints from "@/components/feedback/EditorHints";
 import PossibleDuplicates from "@/components/feedback/PossibleDuplicates";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import {
   useCreateAttachmentMutation,
   useCreateFeedbackMutation,
@@ -381,92 +382,103 @@ const CreateFeedback = () => {
         setIsOpen(open);
       }}
     >
-      <Portal>
+      <DialogPortal>
         <DialogBackdrop />
-        <DialogContent className="w-[calc(100vw-2rem)] max-w-[32rem] sm:w-[28rem]">
-          <DialogTitle>
-            {app.projectPage.projectFeedback.createPost.title}
-          </DialogTitle>
-          <DialogCloseTrigger />
+        <DialogPositioner>
+          <DialogContent className="w-[calc(100vw-2rem)] max-w-[32rem] sm:w-[28rem]">
+            <DialogTitle>
+              {app.projectPage.projectFeedback.createPost.title}
+            </DialogTitle>
+            <DialogCloseTrigger />
 
-          <form
-            className="flex flex-col gap-2"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              await handleSubmit();
-            }}
-          >
-            <AppField name="title">
-              {({ InputField }) => (
-                <InputField
-                  label={app.projectPage.projectFeedback.feedbackTitle.label}
-                  placeholder={titlePlaceholder}
-                  disabled={composerDisabled}
-                />
-              )}
-            </AppField>
-
-            {projectId && (
-              <PossibleDuplicates projectId={projectId} content={titleValue} />
-            )}
-
-            <AppField name="description">
-              {(field) => (
-                <div className="flex flex-col gap-1.5">
-                  <Label>
-                    {app.projectPage.projectFeedback.feedbackDescription.label}
-                  </Label>
-                  <RichTextEditor
-                    editorApi={descriptionEditorApi}
-                    defaultContent={draft?.description || undefined}
-                    placeholder={descriptionPlaceholder}
-                    editable={!composerDisabled}
-                    editorClassName="min-h-16"
-                    mentionItems={mentionItems}
-                    issueReferenceItems={issueReferenceItems}
-                    onUpdate={({ getHTML, getText, isEmpty }) => {
-                      field.handleChange(isEmpty ? "" : getHTML());
-                      setDescriptionLength(getText().trim().length);
-                    }}
+            <form
+              className="flex flex-col gap-2"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await handleSubmit();
+              }}
+            >
+              <AppField name="title">
+                {({ InputField }) => (
+                  <InputField
+                    label={app.projectPage.projectFeedback.feedbackTitle.label}
+                    placeholder={titlePlaceholder}
+                    disabled={composerDisabled}
                   />
-                </div>
+                )}
+              </AppField>
+
+              {projectId && (
+                <PossibleDuplicates
+                  projectId={projectId}
+                  content={titleValue}
+                />
               )}
-            </AppField>
 
-            <AttachmentUploader
-              key={uploaderKey}
-              onAttachmentsChange={setAttachments}
-              onUploadingChange={setIsUploadingAttachments}
-              disabled={attachmentsDisabled}
-            />
+              <AppField name="description">
+                {(field) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label>
+                      {
+                        app.projectPage.projectFeedback.feedbackDescription
+                          .label
+                      }
+                    </Label>
+                    <RichTextEditor
+                      editorApi={descriptionEditorApi}
+                      defaultContent={draft?.description || undefined}
+                      placeholder={descriptionPlaceholder}
+                      editable={!composerDisabled}
+                      editorClassName="min-h-16"
+                      mentionItems={mentionItems}
+                      issueReferenceItems={issueReferenceItems}
+                      onUpdate={({ getHTML, getText, isEmpty }) => {
+                        field.handleChange(isEmpty ? "" : getHTML());
+                        setDescriptionLength(getText().trim().length);
+                      }}
+                    />
+                  </div>
+                )}
+              </AppField>
 
-            <div className="flex flex-row justify-between">
-              <div className="flex items-center gap-2">
-                <CharacterLimit
-                  value={descriptionLength}
-                  max={MAX_DESCRIPTION_LENGTH}
-                  className="place-self-start"
-                />
-                <EditorHints />
+              <AttachmentUploader
+                key={uploaderKey}
+                onAttachmentsChange={setAttachments}
+                onUploadingChange={setIsUploadingAttachments}
+                disabled={attachmentsDisabled}
+              />
+
+              <div className="flex flex-row justify-between">
+                <div className="flex items-center gap-2">
+                  <CharacterLimit
+                    value={descriptionLength}
+                    max={MAX_DESCRIPTION_LENGTH}
+                    className="place-self-start"
+                  />
+                  <EditorHints />
+                </div>
+
+                <AppForm>
+                  <SubmitForm
+                    action={
+                      isSignedIn
+                        ? app.projectPage.projectFeedback.action
+                        : {
+                            submit: "Sign in to post",
+                            pending: "Redirecting...",
+                          }
+                    }
+                    isPending={isPending || isUploadingAttachments}
+                    disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
+                    className="w-fit place-self-end"
+                  />
+                </AppForm>
               </div>
-
-              <AppForm>
-                <SubmitForm
-                  action={
-                    isSignedIn
-                      ? app.projectPage.projectFeedback.action
-                      : { submit: "Sign in to post", pending: "Redirecting..." }
-                  }
-                  isPending={isPending || isUploadingAttachments}
-                  disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
-                  className="w-fit place-self-end"
-                />
-              </AppForm>
-            </div>
-          </form>
-        </DialogContent>
-      </Portal>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

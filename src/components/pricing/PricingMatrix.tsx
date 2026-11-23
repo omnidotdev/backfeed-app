@@ -1,7 +1,3 @@
-import { FaCheck, FaX } from "react-icons/fa6";
-import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
-
-import Tooltip from "@/components/core/Tooltip";
 import {
   Table,
   TableBody,
@@ -9,7 +5,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@omnidotdev/thornberry/table";
+import { FaCheck, FaX } from "react-icons/fa6";
+import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
+
+import Tooltip from "@/components/core/Tooltip";
 import app from "@/lib/config/app.config";
 
 import type { ComponentProps } from "react";

@@ -1,9 +1,9 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
-import { Button } from "@/components/ui/button";
 import { useChangePostStatusMutation } from "@/generated/graphql";
 import { statusBreakdownOptions } from "@/lib/options/projects";
 import { statusTimelineQueryKey } from "@/lib/options/statusTimeline";

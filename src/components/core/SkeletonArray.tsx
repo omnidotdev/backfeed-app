@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@omnidotdev/thornberry/skeleton";
 
 interface Props {
   /** Number of skeletons to render. */

@@ -30,14 +30,10 @@ const knipConfig: KnipConfig = {
     "src/lib/hooks/useMaxFeedbackReached.ts",
     // Server functions export public API for billing entitlements
     "src/server/functions/entitlements.ts",
-    // shadcn primitives - adoptable scaffolding (the unconverted ones are tree-shaken)
-    "src/components/ui/**",
   ],
   ignoreDependencies: [
     // CSS-only dependencies imported in app.css
     "tw-animate-css",
-    // Used only by the not-yet-adopted shadcn primitives (see ignore list)
-    "lucide-react",
   ],
 };
 

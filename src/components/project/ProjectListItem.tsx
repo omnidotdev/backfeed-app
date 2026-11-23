@@ -1,3 +1,4 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { Link, getRouteApi, useNavigate } from "@tanstack/react-router";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -6,7 +7,6 @@ import {
 import { LuSettings } from "react-icons/lu";
 
 import OverflowText from "@/components/core/OverflowText";
-import { Button } from "@/components/ui/button";
 import setSingularOrPlural from "@/lib/util/setSingularOrPlural";
 
 import type { Project } from "@/generated/graphql";

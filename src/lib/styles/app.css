@@ -60,6 +60,12 @@
    ============================================ */
 
 @layer base {
+  /* The shared Omni scrollbar (thornberry base.css) tints its thumb from
+     `--muted-foreground`; point it at this palette's muted text token */
+  :root {
+    --muted-foreground: var(--colors-foreground-muted);
+  }
+
   * {
     border-color: var(--colors-border-subtle);
   }
@@ -68,46 +74,6 @@
     overscroll-behavior-y: none;
     overflow-x: clip;
     overflow-y: scroll;
-
-    /* Themed scrollbar - Light mode */
-    scrollbar-width: thin;
-    scrollbar-color: var(--colors-neutral-300) var(--colors-neutral-100);
-
-    &::-webkit-scrollbar {
-      width: 12px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: var(--colors-neutral-100);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--colors-neutral-300);
-      border-radius: 6px;
-      border: 3px solid var(--colors-neutral-100);
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background-color: var(--colors-neutral-400);
-    }
-  }
-
-  html.dark {
-    /* Themed scrollbar - Dark mode */
-    scrollbar-color: var(--colors-neutral-700) var(--colors-neutral-900);
-
-    &::-webkit-scrollbar-track {
-      background: var(--colors-neutral-900);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--colors-neutral-700);
-      border-color: var(--colors-neutral-900);
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background-color: var(--colors-neutral-600);
-    }
   }
 
   body {
@@ -154,38 +120,6 @@
    ============================================ */
 
 @layer utilities {
-  /* Hide scrollbar */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  /* Custom scrollbar with ruby accent */
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: var(--colors-brand-primary) var(--colors-background-muted);
-  }
-
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: var(--colors-background-muted);
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: var(--colors-brand-primary);
-    border-radius: 10px;
-    border: 2px solid var(--colors-background-muted);
-    background-clip: content-box;
-  }
-
   /* Border glow on hover */
   .border-glow-hover {
     transition:

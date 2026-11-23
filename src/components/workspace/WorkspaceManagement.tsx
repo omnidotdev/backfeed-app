@@ -1,10 +1,10 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { FiUserPlus } from "react-icons/fi";
 import { HiOutlineFolder, HiOutlineUserGroup } from "react-icons/hi2";
 import { LuSettings } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
-import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 
 import type { IconType } from "react-icons";

@@ -3,10 +3,10 @@ import {
   createListCollection,
 } from "@ark-ui/react/combobox";
 import { Portal } from "@ark-ui/react/portal";
+import { Button } from "@omnidotdev/thornberry/button";
 import { useMemo, useState } from "react";
 import { LuCheck, LuPlus } from "react-icons/lu";
 
-import { Button } from "@/components/ui/button";
 import usePostTagEditor from "@/lib/hooks/usePostTagEditor";
 
 import type { ComponentProps } from "react";

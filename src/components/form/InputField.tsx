@@ -1,14 +1,14 @@
 import { Portal } from "@ark-ui/react/portal";
-
-import Field from "@/components/form/Field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from "@omnidotdev/thornberry/input";
+import { Label } from "@omnidotdev/thornberry/label";
 import {
   TooltipContent,
   TooltipPositioner,
   TooltipRoot,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@omnidotdev/thornberry/tooltip";
+
+import Field from "@/components/form/Field";
 import { useFieldContext } from "@/lib/hooks/useForm";
 
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";

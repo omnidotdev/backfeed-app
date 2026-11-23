@@ -1,21 +1,22 @@
-import { Portal } from "@ark-ui/react/portal";
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
+import { Label } from "@omnidotdev/thornberry/label";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { LuPencil, LuPlus, LuTrash2 } from "react-icons/lu";
 
 import TagBadge from "@/components/feedback/TagBadge";
 import SectionContainer from "@/components/layout/SectionContainer";
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   TAG_COLOR_PRESETS,
   createTag,
@@ -162,90 +163,94 @@ const ProjectTags = ({ projectId }: Props) => {
         open={isDialogOpen}
         onOpenChange={({ open }) => setIsDialogOpen(open)}
       >
-        <Portal>
+        <DialogPortal>
           <DialogBackdrop />
 
-          <DialogContent>
-            <DialogCloseTrigger />
+          <DialogPositioner>
+            <DialogContent>
+              <DialogCloseTrigger />
 
-            <DialogTitle>{editingTag ? "Edit tag" : "New tag"}</DialogTitle>
-            <DialogDescription>
-              {editingTag
-                ? "Update the tag name or color."
-                : "Add a label to categorize feedback."}
-            </DialogDescription>
-
-            <form
-              className="flex flex-col gap-4"
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (name.trim()) saveTag();
-              }}
-            >
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="tag-name">Name</Label>
-                <Input
-                  id="tag-name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="e.g. bug, feature request"
-                  autoFocus
-                  required
-                />
+                <DialogTitle>{editingTag ? "Edit tag" : "New tag"}</DialogTitle>
+                <DialogDescription>
+                  {editingTag
+                    ? "Update the tag name or color."
+                    : "Add a label to categorize feedback."}
+                </DialogDescription>
               </div>
 
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="tag-color">Color</Label>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  {TAG_COLOR_PRESETS.map((preset) => (
-                    <button
-                      key={preset}
-                      type="button"
-                      aria-label={`Use color ${preset}`}
-                      onClick={() => setColor(preset)}
-                      className="size-6 rounded-full border-2 transition-transform hover:scale-110"
-                      style={{
-                        backgroundColor: preset,
-                        borderColor:
-                          color === preset
-                            ? "var(--colors-foreground)"
-                            : "transparent",
-                      }}
-                    />
-                  ))}
-
-                  <input
-                    id="tag-color"
-                    type="color"
-                    value={color}
-                    onChange={(event) => setColor(event.target.value)}
-                    className="size-6 cursor-pointer rounded-full border bg-transparent"
-                    aria-label="Custom color"
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (name.trim()) saveTag();
+                }}
+              >
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="tag-name">Name</Label>
+                  <Input
+                    id="tag-name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="e.g. bug, feature request"
+                    autoFocus
+                    required
                   />
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between pt-2">
-                <TagBadge name={name.trim() || "preview"} color={color} />
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="tag-color">Color</Label>
 
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setIsDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {TAG_COLOR_PRESETS.map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        aria-label={`Use color ${preset}`}
+                        onClick={() => setColor(preset)}
+                        className="size-6 rounded-full border-2 transition-transform hover:scale-110"
+                        style={{
+                          backgroundColor: preset,
+                          borderColor:
+                            color === preset
+                              ? "var(--colors-foreground)"
+                              : "transparent",
+                        }}
+                      />
+                    ))}
 
-                  <Button type="submit" disabled={!name.trim() || isSaving}>
-                    {editingTag ? "Save" : "Create"}
-                  </Button>
+                    <input
+                      id="tag-color"
+                      type="color"
+                      value={color}
+                      onChange={(event) => setColor(event.target.value)}
+                      className="size-6 cursor-pointer rounded-full border bg-transparent"
+                      aria-label="Custom color"
+                    />
+                  </div>
                 </div>
-              </div>
-            </form>
-          </DialogContent>
-        </Portal>
+
+                <div className="flex items-center justify-between pt-2">
+                  <TagBadge name={name.trim() || "preview"} color={color} />
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setIsDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button type="submit" disabled={!name.trim() || isSaving}>
+                      {editingTag ? "Save" : "Create"}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
     </SectionContainer>
   );

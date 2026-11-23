@@ -4,6 +4,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { buttonVariants } from "@omnidotdev/thornberry/button";
 import {
   Link,
   createFileRoute,
@@ -13,7 +14,6 @@ import {
 import { HiOutlineFolder } from "react-icons/hi2";
 import { LuLayers, LuPlus, LuRefreshCw, LuTriangleAlert } from "react-icons/lu";
 
-import { buttonVariants } from "@/components/ui/button";
 import authClient from "@/lib/auth/authClient";
 import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";

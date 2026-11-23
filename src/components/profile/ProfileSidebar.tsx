@@ -1,10 +1,16 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  SheetBackdrop,
+  SheetContent,
+  SheetPortal,
+  SheetPositioner,
+  SheetRoot,
+} from "@omnidotdev/thornberry/sheet";
 import { useState } from "react";
 import { LuMenu } from "react-icons/lu";
 import { useIsClient } from "usehooks-ts";
 
 import ProfileNavigation from "@/components/profile/ProfileNavigation";
-import { Button } from "@/components/ui/button";
-import { SheetContent, SheetRoot } from "@/components/ui/sheet";
 
 import type { PropsWithChildren } from "react";
 
@@ -26,22 +32,27 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
         open={isDrawerOpen}
         onOpenChange={({ open }) => setIsDrawerOpen(open)}
       >
-        <SheetContent
-          side="left"
-          className="items-center justify-between overflow-hidden pb-6"
-        >
-          <ProfileNavigation
-            isOpen={isDrawerOpen}
-            onClose={onCloseDrawer}
-            className="w-full gap-4"
-          />
+        <SheetPortal>
+          <SheetBackdrop />
+          <SheetPositioner>
+            <SheetContent
+              side="left"
+              className="flex flex-col items-center justify-between gap-4 overflow-hidden pb-6"
+            >
+              <ProfileNavigation
+                isOpen={isDrawerOpen}
+                onClose={onCloseDrawer}
+                className="w-full gap-4"
+              />
 
-          <div className="flex w-full flex-col px-6">
-            <Button variant="ghost" onClick={onCloseDrawer}>
-              Close
-            </Button>
-          </div>
-        </SheetContent>
+              <div className="flex w-full flex-col px-6">
+                <Button variant="ghost" onClick={onCloseDrawer}>
+                  Close
+                </Button>
+              </div>
+            </SheetContent>
+          </SheetPositioner>
+        </SheetPortal>
       </SheetRoot>
 
       {/* Main content - full width, no sidebar space reserved */}

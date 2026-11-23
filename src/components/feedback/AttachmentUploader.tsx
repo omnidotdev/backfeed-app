@@ -1,3 +1,4 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { useEffect, useRef, useState } from "react";
 import {
   LuLoaderCircle,
@@ -7,7 +8,6 @@ import {
   LuX,
 } from "react-icons/lu";
 
-import { Button } from "@/components/ui/button";
 import {
   ACCEPT_STRING,
   MAX_ATTACHMENTS,

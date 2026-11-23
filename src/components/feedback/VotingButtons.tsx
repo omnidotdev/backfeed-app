@@ -1,7 +1,7 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 
 import SignInPrompt from "@/components/auth/SignInPrompt";
-import { Button } from "@/components/ui/button";
 import { VoteType } from "@/generated/graphql";
 import useHandleVoteMutation from "@/lib/hooks/mutations/useHandleVoteMutation";
 import cn from "@/lib/utils";

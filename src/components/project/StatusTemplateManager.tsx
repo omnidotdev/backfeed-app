@@ -1,4 +1,24 @@
-import { Portal } from "@ark-ui/react/portal";
+import { Button } from "@omnidotdev/thornberry/button";
+import { ConfirmDialog } from "@omnidotdev/thornberry/confirm-dialog";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
+import { Label } from "@omnidotdev/thornberry/label";
+import {
+  SwitchControl,
+  SwitchHiddenInput,
+  SwitchRoot,
+  SwitchThumb,
+} from "@omnidotdev/thornberry/switch";
+import { Textarea } from "@omnidotdev/thornberry/textarea";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { useState } from "react";
@@ -11,24 +31,6 @@ import {
 } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  SwitchControl,
-  SwitchHiddenInput,
-  SwitchRoot,
-  SwitchThumb,
-} from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import {
   useCreateStatusTemplateMutation,
   useDeleteStatusTemplateMutation,
@@ -168,7 +170,7 @@ const StatusTemplateManager = () => {
       }),
   });
 
-  const { mutate: confirmDelete } = useMutation({
+  const { mutate: confirmDelete, isPending: isDeleting } = useMutation({
     mutationFn: (rowId: string) => deleteStatus({ rowId }),
     onSuccess: async () => {
       await invalidate();
@@ -438,142 +440,118 @@ const StatusTemplateManager = () => {
         open={isDialogOpen}
         onOpenChange={({ open }) => setIsDialogOpen(open)}
       >
-        <Portal>
+        <DialogPortal>
           <DialogBackdrop />
 
-          <DialogContent>
-            <DialogCloseTrigger />
+          <DialogPositioner>
+            <DialogContent>
+              <DialogCloseTrigger />
 
-            <DialogTitle>
-              {editingStatus ? "Edit status" : "New status"}
-            </DialogTitle>
-            <DialogDescription>
-              {editingStatus
-                ? "Update the status name, color, or description."
-                : "Add a status for organizing feedback across the workspace."}
-            </DialogDescription>
-
-            <form
-              className="flex flex-col gap-4"
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (displayName.trim()) saveStatus();
-              }}
-            >
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="status-name">Name</Label>
-                <Input
-                  id="status-name"
-                  value={displayName}
-                  onChange={(event) => setDisplayName(event.target.value)}
-                  placeholder="e.g. In Progress, Planned"
-                  autoFocus
-                  required
-                />
+                <DialogTitle>
+                  {editingStatus ? "Edit status" : "New status"}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingStatus
+                    ? "Update the status name, color, or description."
+                    : "Add a status for organizing feedback across the workspace."}
+                </DialogDescription>
               </div>
 
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="status-description">Description</Label>
-                <Textarea
-                  id="status-description"
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                  placeholder="Optional. What this status means."
-                  rows={2}
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="status-color">Color</Label>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  {STATUS_COLOR_PRESETS.map((preset) => (
-                    <button
-                      key={preset}
-                      type="button"
-                      aria-label={`Use color ${preset}`}
-                      onClick={() => setColor(preset)}
-                      className="size-6 rounded-full border-2 transition-transform hover:scale-110"
-                      style={{
-                        backgroundColor: preset,
-                        borderColor:
-                          color === preset
-                            ? "var(--colors-foreground)"
-                            : "transparent",
-                      }}
-                    />
-                  ))}
-
-                  <input
-                    id="status-color"
-                    type="color"
-                    value={color}
-                    onChange={(event) => setColor(event.target.value)}
-                    className="size-6 cursor-pointer rounded-full border bg-transparent"
-                    aria-label="Custom color"
+              <form
+                className="flex flex-col gap-4"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (displayName.trim()) saveStatus();
+                }}
+              >
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="status-name">Name</Label>
+                  <Input
+                    id="status-name"
+                    value={displayName}
+                    onChange={(event) => setDisplayName(event.target.value)}
+                    placeholder="e.g. In Progress, Planned"
+                    autoFocus
+                    required
                   />
                 </div>
-              </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="status-description">Description</Label>
+                  <Textarea
+                    id="status-description"
+                    value={description}
+                    onChange={(event) => setDescription(event.target.value)}
+                    placeholder="Optional. What this status means."
+                    rows={2}
+                  />
+                </div>
 
-                <Button
-                  type="submit"
-                  disabled={!displayName.trim() || isSaving}
-                >
-                  {editingStatus ? "Save" : "Create"}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Portal>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="status-color">Color</Label>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {STATUS_COLOR_PRESETS.map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        aria-label={`Use color ${preset}`}
+                        onClick={() => setColor(preset)}
+                        className="size-6 rounded-full border-2 transition-transform hover:scale-110"
+                        style={{
+                          backgroundColor: preset,
+                          borderColor:
+                            color === preset
+                              ? "var(--colors-foreground)"
+                              : "transparent",
+                        }}
+                      />
+                    ))}
+
+                    <input
+                      id="status-color"
+                      type="color"
+                      value={color}
+                      onChange={(event) => setColor(event.target.value)}
+                      className="size-6 cursor-pointer rounded-full border bg-transparent"
+                      aria-label="Custom color"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    type="submit"
+                    disabled={!displayName.trim() || isSaving}
+                  >
+                    {editingStatus ? "Save" : "Create"}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
 
-      <DialogRoot
+      <ConfirmDialog
         open={!!deletingStatus}
-        onOpenChange={({ open }) => !open && setDeletingStatus(null)}
-      >
-        <Portal>
-          <DialogBackdrop />
-
-          <DialogContent>
-            <DialogCloseTrigger />
-
-            <DialogTitle>Delete status</DialogTitle>
-            <DialogDescription>
-              Delete "{deletingStatus?.displayName}"? Feedback currently in this
-              status will be reset to no status. This cannot be undone.
-            </DialogDescription>
-
-            <div className="flex items-center justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setDeletingStatus(null)}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() =>
-                  deletingStatus && confirmDelete(deletingStatus.rowId)
-                }
-              >
-                Delete
-              </Button>
-            </div>
-          </DialogContent>
-        </Portal>
-      </DialogRoot>
+        onOpenChange={(open) => !open && setDeletingStatus(null)}
+        title={`Delete status "${deletingStatus?.displayName ?? ""}"?`}
+        description="Feedback currently in this status will be reset to no status. This cannot be undone."
+        confirmLabel="Delete"
+        pendingLabel="Deleting..."
+        isPending={isDeleting}
+        onConfirm={() => deletingStatus && confirmDelete(deletingStatus.rowId)}
+      />
     </SectionContainer>
   );
 };

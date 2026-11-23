@@ -1,7 +1,7 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { useStore } from "@tanstack/react-form";
 import { IoWarningOutline } from "react-icons/io5";
 
-import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 import { useFormContext } from "@/lib/hooks/useForm";
 import cn from "@/lib/utils";

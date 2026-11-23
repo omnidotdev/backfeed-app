@@ -4,6 +4,14 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import { RichTextContent } from "@omnidotdev/thornberry/rich-text-editor";
 import {
   useNavigate,
@@ -23,14 +31,6 @@ import TagBadge from "@/components/feedback/TagBadge";
 import TagPicker from "@/components/feedback/TagPicker";
 import UpdateFeedback from "@/components/feedback/UpdateFeedback";
 import VotingButtons from "@/components/feedback/VotingButtons";
-import {
-  MenuContent,
-  MenuItem,
-  MenuItemGroup,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import {
   VoteType,
   useDeletePostMutation,

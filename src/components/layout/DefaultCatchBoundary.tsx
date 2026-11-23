@@ -1,8 +1,8 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { LuArrowLeft } from "react-icons/lu";
 
-import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 
 import type { ErrorComponentProps } from "@tanstack/react-router";

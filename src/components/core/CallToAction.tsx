@@ -1,12 +1,12 @@
-import { useNavigate } from "@tanstack/react-router";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   TooltipContent,
   TooltipPositioner,
   TooltipRoot,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@omnidotdev/thornberry/tooltip";
+import { useNavigate } from "@tanstack/react-router";
+
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 
 import type { LinkOptions } from "@tanstack/react-router";

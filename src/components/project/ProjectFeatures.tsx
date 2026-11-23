@@ -1,13 +1,13 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
-
-import SectionContainer from "@/components/layout/SectionContainer";
 import {
   SwitchControl,
   SwitchHiddenInput,
   SwitchRoot,
   SwitchThumb,
-} from "@/components/ui/switch";
+} from "@omnidotdev/thornberry/switch";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getRouteApi } from "@tanstack/react-router";
+
+import SectionContainer from "@/components/layout/SectionContainer";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import { projectOptions } from "@/lib/options/projects";
 import toaster from "@/lib/util/toaster";

@@ -1,3 +1,13 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  SheetBackdrop,
+  SheetCloseTrigger,
+  SheetContent,
+  SheetPortal,
+  SheetPositioner,
+  SheetRoot,
+  SheetTrigger,
+} from "@omnidotdev/thornberry/sheet";
 import { useRouteContext } from "@tanstack/react-router";
 import { useCallback, useEffect } from "react";
 import { FiX } from "react-icons/fi";
@@ -10,13 +20,6 @@ import NotificationBell from "@/components/layout/NotificationBell";
 import SidebarNavigation from "@/components/layout/SidebarNavigation";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import WorkspaceSwitcher from "@/components/layout/WorkspaceSwitcher";
-import { Button } from "@/components/ui/button";
-import {
-  SheetCloseTrigger,
-  SheetContent,
-  SheetRoot,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
@@ -113,52 +116,60 @@ const HeaderActions = () => {
             </Button>
           </SheetTrigger>
 
-          <SheetContent side="right" className="p-4 shadow-md">
-            <div className="flex justify-between">
-              <ThemeToggle />
+          <SheetPortal>
+            <SheetBackdrop />
+            <SheetPositioner>
+              <SheetContent
+                side="right"
+                className="flex flex-col gap-4 p-4 shadow-md"
+              >
+                <div className="flex justify-between">
+                  <ThemeToggle />
 
-              <SheetCloseTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="bg-muted"
-                  aria-label="Close Mobile Sidebar"
-                >
-                  <FiX />
-                </Button>
-              </SheetCloseTrigger>
-            </div>
-
-            <div className="flex h-full flex-1 flex-col justify-between">
-              <div className="mt-4 flex flex-col items-center">
-                <LogoLink
-                  width={60}
-                  className="flex-col"
-                  onClick={() => setIsMobileSidebarOpen(false)}
-                />
-
-                <SidebarNavigation />
-              </div>
-
-              {session ? (
-                <AccountInformation />
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <Button
-                    variant="outline"
-                    className="border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
-                    onClick={handleSignIn}
-                  >
-                    {app.auth.signIn.label}
-                  </Button>
-
-                  <Button onClick={handleSignUp}>
-                    {app.auth.signUp.label}
-                  </Button>
+                  <SheetCloseTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="bg-muted"
+                      aria-label="Close Mobile Sidebar"
+                    >
+                      <FiX />
+                    </Button>
+                  </SheetCloseTrigger>
                 </div>
-              )}
-            </div>
-          </SheetContent>
+
+                <div className="flex h-full flex-1 flex-col justify-between">
+                  <div className="mt-4 flex flex-col items-center">
+                    <LogoLink
+                      width={60}
+                      className="flex-col"
+                      onClick={() => setIsMobileSidebarOpen(false)}
+                    />
+
+                    <SidebarNavigation />
+                  </div>
+
+                  {session ? (
+                    <AccountInformation />
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        variant="outline"
+                        className="border-primary text-primary hover:bg-primary/10 dark:text-[var(--colors-brand-primary-400)]"
+                        onClick={handleSignIn}
+                      >
+                        {app.auth.signIn.label}
+                      </Button>
+
+                      <Button onClick={handleSignUp}>
+                        {app.auth.signUp.label}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </SheetPositioner>
+          </SheetPortal>
         </SheetRoot>
       </div>
     </div>

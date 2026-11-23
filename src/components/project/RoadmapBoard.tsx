@@ -1,11 +1,12 @@
-import FeedbackCard from "@/components/feedback/FeedbackCard";
 import {
   Board,
   BoardColumn,
   BoardColumnBody,
   BoardColumnEmpty,
   BoardColumnHeader,
-} from "@/components/ui/board";
+} from "@omnidotdev/thornberry/board";
+
+import FeedbackCard from "@/components/feedback/FeedbackCard";
 import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -65,7 +66,9 @@ const RoadmapBoard = ({
       {columns.map(({ status, posts: columnPosts }) => (
         <BoardColumn
           key={status.rowId ?? status.displayName}
-          className="sm:h-full sm:min-h-0"
+          // columns grow to fill the board width; a min width keeps them
+          // readable and lets the board scroll once there are too many to fit
+          className="sm:h-full sm:min-h-0 sm:w-auto sm:min-w-72 sm:flex-1 sm:shrink"
         >
           <BoardColumnHeader
             title={status.displayName ?? "Unknown"}

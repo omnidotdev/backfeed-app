@@ -1,8 +1,8 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { LuX } from "react-icons/lu";
 
 import TagBadge from "@/components/feedback/TagBadge";
 import TagPicker from "@/components/feedback/TagPicker";
-import { Button } from "@/components/ui/button";
 import usePostTagEditor from "@/lib/hooks/usePostTagEditor";
 
 interface Props {

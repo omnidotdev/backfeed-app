@@ -1,8 +1,8 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { LuImagePlus, LuTrash2 } from "react-icons/lu";
 
-import { Button } from "@/components/ui/button";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import { ATTACHMENT_LIMITS, validateFile } from "@/lib/media/mediaConfig";
 import { uploadAttachment } from "@/lib/media/uploadAttachment";

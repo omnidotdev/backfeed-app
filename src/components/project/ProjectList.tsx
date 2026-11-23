@@ -1,3 +1,11 @@
+import {
+  PaginationContext,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@omnidotdev/thornberry/pagination";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { LuCirclePlus } from "react-icons/lu";
@@ -6,7 +14,6 @@ import SkeletonArray from "@/components/core/SkeletonArray";
 import EmptyState from "@/components/layout/EmptyState";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
 import ProjectListItem from "@/components/project/ProjectListItem";
-import { Pagination } from "@/components/ui/pagination";
 import app from "@/lib/config/app.config";
 import { projectsOptions } from "@/lib/options/projects";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -96,17 +103,44 @@ const ProjectList = ({ canCreateProjects }: Props) => {
         ))}
       </div>
 
-      <Pagination
+      <PaginationRoot
         className="mt-4"
-        ellipsisClassName="hidden sm:flex"
-        itemClassName="hidden sm:flex"
         count={data?.totalCount ?? 0}
         pageSize={pageSize}
         defaultPage={page}
         onPageChange={({ page }) =>
           navigate({ search: (prev) => ({ ...prev, page }) })
         }
-      />
+      >
+        <div className="flex items-center justify-center gap-1">
+          <PaginationPrevTrigger aria-label="Previous page" />
+
+          <PaginationContext>
+            {(pagination) =>
+              pagination.pages.map((page, index) =>
+                page.type === "page" ? (
+                  <PaginationItem
+                    key={`page-${page.value}`}
+                    {...page}
+                    className="hidden sm:flex"
+                  >
+                    {page.value}
+                  </PaginationItem>
+                ) : (
+                  <PaginationEllipsis
+                    // biome-ignore lint/suspicious/noArrayIndexKey: ellipsis position is stable within the page list
+                    key={`ellipsis-${index}`}
+                    index={index}
+                    className="hidden sm:flex"
+                  />
+                ),
+              )
+            }
+          </PaginationContext>
+
+          <PaginationNextTrigger aria-label="Next page" />
+        </div>
+      </PaginationRoot>
     </div>
   );
 };
