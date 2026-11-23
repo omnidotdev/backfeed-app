@@ -17,12 +17,10 @@
   /* white text on the coral primary; button labels are bold/large enough to
      clear WCAG AA (3:1) against coral-500 */
   --color-primary-foreground: oklch(0.985 0.001 0);
-  /* secondary in the shared token contract is a subtle neutral surface
-     (secondary buttons and badges), so the amethyst brand lives on
-     brand-secondary instead */
-  --color-secondary: var(--colors-background-muted);
-  --color-secondary-foreground: var(--colors-foreground-default);
-  --color-brand-secondary: var(--colors-brand-secondary);
+  /* secondary carries Sigil's brand secondary (amethyst), matching the rest
+     of the fleet; thornberry only uses it for the secondary Badge */
+  --color-secondary: var(--colors-brand-secondary);
+  --color-secondary-foreground: oklch(0.985 0.001 0);
   --color-muted: var(--colors-background-muted);
   --color-muted-foreground: var(--colors-foreground-muted);
   /* default border is intentionally subtle (neutral-200/700); border-default
