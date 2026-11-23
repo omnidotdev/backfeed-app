@@ -1,9 +1,9 @@
 import { gatekeeperOrgManageUrl } from "@omnidotdev/providers/react";
+import { buttonVariants } from "@omnidotdev/thornberry/button";
 import { createFileRoute } from "@tanstack/react-router";
 import { LuExternalLink } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
-import { buttonVariants } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";

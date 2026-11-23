@@ -1,11 +1,11 @@
-import { useQueryClient } from "@tanstack/react-query";
-
 import {
   SwitchControl,
   SwitchHiddenInput,
   SwitchRoot,
   SwitchThumb,
-} from "@/components/ui/switch";
+} from "@omnidotdev/thornberry/switch";
+import { useQueryClient } from "@tanstack/react-query";
+
 import {
   useMyNotificationPreferenceQuery,
   useSetNotificationPreferenceMutation,

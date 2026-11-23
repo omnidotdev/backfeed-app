@@ -1,4 +1,10 @@
 import {
+  SwitchControl,
+  SwitchHiddenInput,
+  SwitchRoot,
+  SwitchThumb,
+} from "@omnidotdev/thornberry/switch";
+import {
   keepPreviousData,
   useIsMutating,
   useQuery,
@@ -8,12 +14,6 @@ import { LuGlobe } from "react-icons/lu";
 
 import SectionContainer from "@/components/layout/SectionContainer";
 import UpdateLinks from "@/components/project/UpdateLinks";
-import {
-  SwitchControl,
-  SwitchHiddenInput,
-  SwitchRoot,
-  SwitchThumb,
-} from "@/components/ui/switch";
 import {
   useCreateProjectLinkMutation,
   useDeleteProjectLinkMutation,

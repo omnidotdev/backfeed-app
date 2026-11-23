@@ -1,12 +1,11 @@
 import { Portal } from "@ark-ui/react/portal";
-import { useState } from "react";
-
 import {
   TooltipContent,
   TooltipPositioner,
   TooltipRoot,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@omnidotdev/thornberry/tooltip";
+import { useState } from "react";
 
 import type { ComponentProps, ReactNode } from "react";
 

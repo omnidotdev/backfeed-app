@@ -1,9 +1,9 @@
+import { Skeleton } from "@omnidotdev/thornberry/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import { HiOutlineChatBubbleLeftRight, HiOutlineFolder } from "react-icons/hi2";
 
 import SectionContainer from "@/components/layout/SectionContainer";
-import { Skeleton } from "@/components/ui/skeleton";
 import app from "@/lib/config/app.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 

@@ -3,6 +3,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   getRouteApi,
   useNavigate,
@@ -11,7 +12,6 @@ import {
 import { PiCreditCardLight, PiUserCircle } from "react-icons/pi";
 
 import OverflowText from "@/components/core/OverflowText";
-import { Button } from "@/components/ui/button";
 import app from "@/lib/config/app.config";
 import cn from "@/lib/utils";
 

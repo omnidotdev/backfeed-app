@@ -1,4 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@omnidotdev/thornberry/skeleton";
+
 import cn from "@/lib/utils";
 
 import type { ComponentProps } from "react";

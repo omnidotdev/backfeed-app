@@ -1,16 +1,17 @@
-import { Portal } from "@ark-ui/react/portal";
+import {
+  DialogBackdrop,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useIsClient } from "usehooks-ts";
 import { z } from "zod";
 
-import {
-  DialogBackdrop,
-  DialogContent,
-  DialogDescription,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useCreateProjectMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -192,55 +193,63 @@ const CreateProject = ({ workspaceSlug }: Props) => {
         setIsOpen(open);
       }}
     >
-      <Portal>
+      <DialogPortal>
         <DialogBackdrop />
-        <DialogContent className="max-sm:min-w-[80%]">
-          <DialogTitle>{app.dashboardPage.cta.newProject.label}</DialogTitle>
-          <DialogDescription>
-            {app.dashboardPage.cta.newProject.description}
-          </DialogDescription>
+        <DialogPositioner>
+          <DialogContent className="max-sm:min-w-[80%]">
+            <div className="flex flex-col gap-1.5">
+              <DialogTitle>
+                {app.dashboardPage.cta.newProject.label}
+              </DialogTitle>
+              <DialogDescription>
+                {app.dashboardPage.cta.newProject.description}
+              </DialogDescription>
+            </div>
 
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              await handleSubmit();
-            }}
-          >
-            <AppField name="name">
-              {({ InputField }) => (
-                <InputField
-                  label={app.dashboardPage.cta.newProject.projectName.id}
-                  placeholder={
-                    app.dashboardPage.cta.newProject.projectName.placeholder
-                  }
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await handleSubmit();
+              }}
+            >
+              <AppField name="name">
+                {({ InputField }) => (
+                  <InputField
+                    label={app.dashboardPage.cta.newProject.projectName.id}
+                    placeholder={
+                      app.dashboardPage.cta.newProject.projectName.placeholder
+                    }
+                  />
+                )}
+              </AppField>
+
+              <AppField name="description">
+                {({ InputField }) => (
+                  <InputField
+                    label={
+                      app.dashboardPage.cta.newProject.projectDescription.id
+                    }
+                    placeholder={
+                      app.dashboardPage.cta.newProject.projectDescription
+                        .placeholder
+                    }
+                  />
+                )}
+              </AppField>
+
+              <AppForm>
+                <SubmitForm
+                  action={app.dashboardPage.cta.newProject.action}
+                  isPending={isPending}
+                  className="sm:flex-1"
                 />
-              )}
-            </AppField>
-
-            <AppField name="description">
-              {({ InputField }) => (
-                <InputField
-                  label={app.dashboardPage.cta.newProject.projectDescription.id}
-                  placeholder={
-                    app.dashboardPage.cta.newProject.projectDescription
-                      .placeholder
-                  }
-                />
-              )}
-            </AppField>
-
-            <AppForm>
-              <SubmitForm
-                action={app.dashboardPage.cta.newProject.action}
-                isPending={isPending}
-                className="sm:flex-1"
-              />
-            </AppForm>
-          </form>
-        </DialogContent>
-      </Portal>
+              </AppForm>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

@@ -1,10 +1,10 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import { Label } from "@omnidotdev/thornberry/label";
 import { Reorder } from "motion/react";
 import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { updateProjectOptions } from "@/lib/form/updateProjectOptions";
 import { withForm } from "@/lib/hooks/useForm";
 

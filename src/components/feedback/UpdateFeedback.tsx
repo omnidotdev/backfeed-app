@@ -1,4 +1,14 @@
-import { Portal } from "@ark-ui/react/portal";
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  DialogBackdrop,
+  DialogContent,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "@omnidotdev/thornberry/dialog";
+import { Label } from "@omnidotdev/thornberry/label";
 import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
@@ -11,15 +21,6 @@ import CharacterLimit from "@/components/core/CharacterLimit";
 import AttachmentUploader from "@/components/feedback/AttachmentUploader";
 import EditorHints from "@/components/feedback/EditorHints";
 import PostTags from "@/components/feedback/PostTags";
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogContent,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import {
   useCreateAttachmentMutation,
   useDeleteAttachmentMutation,
@@ -243,148 +244,153 @@ const UpdateFeedback = ({ feedback, triggerProps, ...rest }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <Portal>
+      <DialogPortal>
         <DialogBackdrop />
         {/* NB: `onClick` stops propagation as the dialog is scoped to an individual feedback card */}
-        <DialogContent
-          onClick={(evt) => evt.stopPropagation()}
-          className="w-[calc(100vw-2rem)] max-w-[32rem] cursor-default sm:w-[28rem]"
-        >
-          <DialogTitle>Update Feedback</DialogTitle>
-
-          <form
-            className="flex flex-col gap-2"
-            onSubmit={async (evt) => {
-              evt.preventDefault();
-              evt.stopPropagation();
-              await handleSubmit();
-            }}
+        <DialogPositioner>
+          <DialogContent
+            onClick={(evt) => evt.stopPropagation()}
+            className="w-[calc(100vw-2rem)] max-w-[32rem] cursor-default sm:w-[28rem]"
           >
-            <AppField name="title">
-              {({ InputField }) => (
-                <InputField
-                  label={app.projectPage.projectFeedback.feedbackTitle.label}
-                  placeholder={
-                    app.projectPage.projectFeedback.feedbackTitle
-                      .placeholders[0]
-                  }
-                  onClick={(evt) => {
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                  }}
-                />
-              )}
-            </AppField>
+            <DialogTitle>Update Feedback</DialogTitle>
 
-            <AppField name="description">
-              {(field) => (
-                <div className="flex flex-col gap-1.5">
-                  <Label>
-                    {app.projectPage.projectFeedback.feedbackDescription.label}
-                  </Label>
-                  <RichTextEditor
-                    editorApi={descriptionEditorApi}
-                    defaultContent={feedback.description ?? undefined}
+            <form
+              className="flex flex-col gap-2"
+              onSubmit={async (evt) => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                await handleSubmit();
+              }}
+            >
+              <AppField name="title">
+                {({ InputField }) => (
+                  <InputField
+                    label={app.projectPage.projectFeedback.feedbackTitle.label}
                     placeholder={
-                      app.projectPage.projectFeedback.feedbackDescription
+                      app.projectPage.projectFeedback.feedbackTitle
                         .placeholders[0]
                     }
-                    editorClassName="min-h-32"
-                    issueReferenceItems={issueReferenceItems}
-                    mentionItems={mentionItems}
-                    // keep clicks inside the editor from reaching the card
-                    onClick={(evt) => evt.stopPropagation()}
-                    onUpdate={({ getHTML, getText, isEmpty }) => {
-                      field.handleChange(isEmpty ? "" : getHTML());
-                      setDescriptionLength(getText().trim().length);
+                    onClick={(evt) => {
+                      evt.preventDefault();
+                      evt.stopPropagation();
                     }}
                   />
-                </div>
-              )}
-            </AppField>
+                )}
+              </AppField>
 
-            {/* mount only while open so closed cards don't each fetch tags */}
-            {isOpen &&
-              feedback.rowId &&
-              feedback.rowId !== "pending" &&
-              feedback.project?.rowId && (
-                <div className="flex flex-col gap-1.5">
-                  <Label>{app.projectPage.projectFeedback.tags.label}</Label>
-                  <PostTags
-                    postId={feedback.rowId}
-                    projectId={feedback.project.rowId}
-                    canAssign
-                    canCreate={hasAdminPrivileges}
-                  />
-                </div>
-              )}
-
-            {!!existingAttachments.length && (
-              <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
-                {existingAttachments.map((attachment) => (
-                  <div
-                    key={attachment.rowId}
-                    className="group relative aspect-square overflow-hidden rounded-md border border-border-subtle"
-                  >
-                    {attachment.kind === "image" ? (
-                      <img
-                        src={attachment.url}
-                        alt=""
-                        className="size-full object-cover"
-                      />
-                    ) : (
-                      // biome-ignore lint/a11y/useMediaCaption: user-uploaded preview
-                      <video
-                        src={attachment.url}
-                        className="size-full object-cover"
-                      />
-                    )}
-
-                    <button
-                      type="button"
-                      aria-label="Remove attachment"
-                      className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
-                      onClick={(evt) => {
-                        evt.stopPropagation();
-                        removeExistingAttachment(attachment.rowId);
+              <AppField name="description">
+                {(field) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label>
+                      {
+                        app.projectPage.projectFeedback.feedbackDescription
+                          .label
+                      }
+                    </Label>
+                    <RichTextEditor
+                      editorApi={descriptionEditorApi}
+                      defaultContent={feedback.description ?? undefined}
+                      placeholder={
+                        app.projectPage.projectFeedback.feedbackDescription
+                          .placeholders[0]
+                      }
+                      editorClassName="min-h-32"
+                      issueReferenceItems={issueReferenceItems}
+                      mentionItems={mentionItems}
+                      // keep clicks inside the editor from reaching the card
+                      onClick={(evt) => evt.stopPropagation()}
+                      onUpdate={({ getHTML, getText, isEmpty }) => {
+                        field.handleChange(isEmpty ? "" : getHTML());
+                        setDescriptionLength(getText().trim().length);
                       }}
-                    >
-                      <LuX className="size-3" />
-                    </button>
+                    />
                   </div>
-                ))}
+                )}
+              </AppField>
+
+              {/* mount only while open so closed cards don't each fetch tags */}
+              {isOpen &&
+                feedback.rowId &&
+                feedback.rowId !== "pending" &&
+                feedback.project?.rowId && (
+                  <div className="flex flex-col gap-1.5">
+                    <Label>{app.projectPage.projectFeedback.tags.label}</Label>
+                    <PostTags
+                      postId={feedback.rowId}
+                      projectId={feedback.project.rowId}
+                      canAssign
+                      canCreate={hasAdminPrivileges}
+                    />
+                  </div>
+                )}
+
+              {!!existingAttachments.length && (
+                <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                  {existingAttachments.map((attachment) => (
+                    <div
+                      key={attachment.rowId}
+                      className="group relative aspect-square overflow-hidden rounded-md border border-border-subtle"
+                    >
+                      {attachment.kind === "image" ? (
+                        <img
+                          src={attachment.url}
+                          alt=""
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        // biome-ignore lint/a11y/useMediaCaption: user-uploaded preview
+                        <video
+                          src={attachment.url}
+                          className="size-full object-cover"
+                        />
+                      )}
+
+                      <button
+                        type="button"
+                        aria-label="Remove attachment"
+                        className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
+                        onClick={(evt) => {
+                          evt.stopPropagation();
+                          removeExistingAttachment(attachment.rowId);
+                        }}
+                      >
+                        <LuX className="size-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <AttachmentUploader
+                key={uploaderKey}
+                onAttachmentsChange={setNewAttachments}
+                onUploadingChange={setIsUploadingAttachments}
+              />
+
+              <div className="flex flex-row justify-between">
+                <div className="flex items-center gap-2">
+                  <CharacterLimit
+                    value={descriptionLength}
+                    max={MAX_DESCRIPTION_LENGTH}
+                    className="place-self-start"
+                  />
+                  <EditorHints />
+                </div>
+
+                <AppForm>
+                  <SubmitForm
+                    action={updatePostDetails.action}
+                    isPending={isPending || isUploadingAttachments}
+                    disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
+                    className="w-fit place-self-end"
+                    onClick={(evt) => evt.stopPropagation()}
+                  />
+                </AppForm>
               </div>
-            )}
-
-            <AttachmentUploader
-              key={uploaderKey}
-              onAttachmentsChange={setNewAttachments}
-              onUploadingChange={setIsUploadingAttachments}
-            />
-
-            <div className="flex flex-row justify-between">
-              <div className="flex items-center gap-2">
-                <CharacterLimit
-                  value={descriptionLength}
-                  max={MAX_DESCRIPTION_LENGTH}
-                  className="place-self-start"
-                />
-                <EditorHints />
-              </div>
-
-              <AppForm>
-                <SubmitForm
-                  action={updatePostDetails.action}
-                  isPending={isPending || isUploadingAttachments}
-                  disabled={descriptionLength > MAX_DESCRIPTION_LENGTH}
-                  className="w-fit place-self-end"
-                  onClick={(evt) => evt.stopPropagation()}
-                />
-              </AppForm>
-            </div>
-          </form>
-        </DialogContent>
-      </Portal>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

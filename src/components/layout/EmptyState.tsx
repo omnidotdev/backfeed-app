@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   TooltipContent,
   TooltipPositioner,
   TooltipRoot,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@omnidotdev/thornberry/tooltip";
+
 import cn from "@/lib/utils";
 
 import type { IconType } from "react-icons";

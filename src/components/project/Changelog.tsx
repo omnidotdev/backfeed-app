@@ -1,8 +1,8 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { LuRocket } from "react-icons/lu";
 
-import { Button } from "@/components/ui/button";
 import { changelogOptions } from "@/lib/options/changelog";
 import stripHtml from "@/lib/util/stripHtml";
 

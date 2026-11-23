@@ -1,5 +1,19 @@
 import { createListCollection } from "@ark-ui/react";
+import { Portal } from "@ark-ui/react/portal";
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
 import { Kbd } from "@omnidotdev/thornberry/kbd";
+import {
+  SelectContent,
+  SelectControl,
+  SelectIndicator,
+  SelectItem,
+  SelectItemText,
+  SelectPositioner,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "@omnidotdev/thornberry/select";
 import {
   keepPreviousData,
   useInfiniteQuery,
@@ -7,6 +21,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
+import { ChevronDown } from "lucide-react";
 import {
   useCallback,
   useDeferredValue,
@@ -30,20 +45,6 @@ import SavedViews from "@/components/project/SavedViews";
 import StatusFilterPills from "@/components/project/StatusFilterPills";
 import SwitchFeedbackView from "@/components/project/SwitchFeedbackView";
 import TagFilterPills from "@/components/project/TagFilterPills";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  SelectContent,
-  SelectControl,
-  SelectIndicator,
-  SelectItem,
-  SelectItemText,
-  SelectPortal,
-  SelectPositioner,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "@/components/ui/select";
 import { useCreateFeedbackMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import { Hotkeys, hotkeyLabel } from "@/lib/constants/hotkeys.constant";
@@ -419,13 +420,15 @@ const ProjectFeedback = () => {
             }}
           >
             <SelectControl>
-              <SelectTrigger className="h-8 min-w-36 border-border-subtle">
+              <SelectTrigger className="h-8 min-w-36 border border-border-subtle bg-background">
                 <SelectValueText placeholder="Sort by" />
-                <SelectIndicator />
+                <SelectIndicator>
+                  <ChevronDown className="text-muted-foreground" />
+                </SelectIndicator>
               </SelectTrigger>
             </SelectControl>
 
-            <SelectPortal>
+            <Portal>
               <SelectPositioner>
                 <SelectContent className="w-[var(--reference-width)] min-w-0">
                   {SORT_BY_OPTIONS.map((option) => (
@@ -435,7 +438,7 @@ const ProjectFeedback = () => {
                   ))}
                 </SelectContent>
               </SelectPositioner>
-            </SelectPortal>
+            </Portal>
           </SelectRoot>
 
           <SavedViews />

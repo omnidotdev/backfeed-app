@@ -1,6 +1,18 @@
 import { Portal } from "@ark-ui/react/portal";
 import { workspacesUrl } from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
+import { Button } from "@omnidotdev/thornberry/button";
+import { Card } from "@omnidotdev/thornberry/card";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuPositioner,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import {
   Link,
   useNavigate,
@@ -11,18 +23,6 @@ import { HiLockOpen, HiSparkles } from "react-icons/hi2";
 import { LuBuilding, LuCheck, LuClockAlert, LuPlus } from "react-icons/lu";
 import { match } from "ts-pattern";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import {
-  MenuContent,
-  MenuItem,
-  MenuItemGroup,
-  MenuItemGroupLabel,
-  MenuPositioner,
-  MenuRoot,
-  MenuSeparator,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import signIn from "@/lib/auth/signIn";
 import { upgradePlanUrl } from "@/lib/billing/hubLinks";
 import app from "@/lib/config/app.config";

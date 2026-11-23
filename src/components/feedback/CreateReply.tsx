@@ -1,3 +1,7 @@
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@omnidotdev/thornberry/collapsible";
 import { RichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
@@ -6,10 +10,6 @@ import { z } from "zod";
 
 import CharacterLimit from "@/components/core/CharacterLimit";
 import EditorHints from "@/components/feedback/EditorHints";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
@@ -148,7 +148,7 @@ const CreateReply = ({
 
   return (
     <CollapsibleRoot {...rest}>
-      <CollapsibleContent>
+      <CollapsibleContent className="rounded-none border-0 p-0">
         <div className="mt-2 flex flex-col rounded-sm border border-border-subtle transition-[box-shadow,border-color] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary sm:ml-10">
           <form
             className="flex flex-col"

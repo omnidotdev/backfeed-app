@@ -1,3 +1,7 @@
 bun knip
 bun biome check --staged --no-errors-on-unmatched
 bunx tsc --noEmit
+
+# non-blocking: list local ui copies that shadow a thornberry component
+OMNI="$(git rev-parse --show-toplevel)/../../.."
+[ -f "$OMNI/golden/scripts/thornberry-shadow-audit.ts" ] && bun "$OMNI/golden/scripts/thornberry-shadow-audit.ts" --path . || true

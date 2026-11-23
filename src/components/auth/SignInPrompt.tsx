@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   TooltipContent,
   TooltipPositioner,
   TooltipRoot,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@omnidotdev/thornberry/tooltip";
+
 import signIn from "@/lib/auth/signIn";
 
 import type { ComponentProps, MouseEvent, ReactNode } from "react";

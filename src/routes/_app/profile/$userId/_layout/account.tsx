@@ -1,3 +1,6 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
+import { Label } from "@omnidotdev/thornberry/label";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
@@ -5,9 +8,6 @@ import { LuPencil } from "react-icons/lu";
 
 import Page from "@/components/layout/Page";
 import NotificationSettings from "@/components/profile/NotificationSettings";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL, CONSOLE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";

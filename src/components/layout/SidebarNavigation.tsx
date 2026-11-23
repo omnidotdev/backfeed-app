@@ -1,13 +1,13 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { FiChevronRight } from "react-icons/fi";
-
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@omnidotdev/thornberry/button";
 import {
   CollapsibleContent,
   CollapsibleRoot,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@omnidotdev/thornberry/collapsible";
+import { Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { FiChevronRight } from "react-icons/fi";
+
 import useSidebarNavigationItems from "@/lib/hooks/useSidebarNavigationItems";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 import cn from "@/lib/utils";
@@ -48,32 +48,30 @@ const SidebarNavigation = () => {
                 if (isProjectContentOpen) setIsProjectContentOpen(false);
               }}
             >
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="ghost"
+              <CollapsibleTrigger
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  navButton,
+                  isActive &&
+                    "text-primary dark:text-[var(--colors-brand-primary-400)]",
+                )}
+              >
+                <span className="flex items-center gap-2">
+                  {Icon && <Icon className="size-4" />}
+                  <span className="text-left">{label}</span>
+                </span>
+
+                <span
                   className={cn(
-                    navButton,
-                    isActive &&
-                      "text-primary dark:text-[var(--colors-brand-primary-400)]",
+                    "transition-transform",
+                    isWorkspaceContentOpen && "rotate-90",
                   )}
                 >
-                  <span className="flex items-center gap-2">
-                    {Icon && <Icon className="size-4" />}
-                    <span className="text-left">{label}</span>
-                  </span>
-
-                  <span
-                    className={cn(
-                      "transition-transform",
-                      isWorkspaceContentOpen && "rotate-90",
-                    )}
-                  >
-                    <FiChevronRight />
-                  </span>
-                </Button>
+                  <FiChevronRight />
+                </span>
               </CollapsibleTrigger>
 
-              <CollapsibleContent>
+              <CollapsibleContent className="rounded-none border-0 p-0">
                 <div className="flex w-full gap-2">
                   <div className="ml-2.5 w-px self-stretch bg-border" />
 
@@ -99,34 +97,32 @@ const SidebarNavigation = () => {
                                 setIsProjectContentOpen((open) => !open)
                               }
                             >
-                              <CollapsibleTrigger asChild>
-                                <Button
-                                  variant="ghost"
+                              <CollapsibleTrigger
+                                className={cn(
+                                  buttonVariants({ variant: "ghost" }),
+                                  navButton,
+                                  isActive &&
+                                    "text-primary dark:text-[var(--colors-brand-primary-400)]",
+                                )}
+                              >
+                                <span className="flex items-center gap-2">
+                                  {ChildIcon && (
+                                    <ChildIcon className="size-4" />
+                                  )}
+                                  <span className="text-left">{label}</span>
+                                </span>
+
+                                <span
                                   className={cn(
-                                    navButton,
-                                    isActive &&
-                                      "text-primary dark:text-[var(--colors-brand-primary-400)]",
+                                    "transition-transform",
+                                    isProjectContentOpen && "rotate-90",
                                   )}
                                 >
-                                  <span className="flex items-center gap-2">
-                                    {ChildIcon && (
-                                      <ChildIcon className="size-4" />
-                                    )}
-                                    <span className="text-left">{label}</span>
-                                  </span>
-
-                                  <span
-                                    className={cn(
-                                      "transition-transform",
-                                      isProjectContentOpen && "rotate-90",
-                                    )}
-                                  >
-                                    <FiChevronRight />
-                                  </span>
-                                </Button>
+                                  <FiChevronRight />
+                                </span>
                               </CollapsibleTrigger>
 
-                              <CollapsibleContent>
+                              <CollapsibleContent className="rounded-none border-0 p-0">
                                 <div className="flex w-full gap-2">
                                   <div className="w-7 self-stretch" />
 

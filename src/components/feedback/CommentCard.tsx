@@ -4,6 +4,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button } from "@omnidotdev/thornberry/button";
 import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -15,7 +16,6 @@ import CreateReply from "@/components/feedback/CreateReply";
 import ReactionBar from "@/components/feedback/ReactionBar";
 import Replies from "@/components/feedback/Replies";
 import RoleBadge from "@/components/feedback/RoleBadge";
-import { Button } from "@/components/ui/button";
 import { useDeleteCommentMutation } from "@/generated/graphql";
 import app from "@/lib/config/app.config";
 import useOrgRoleMap from "@/lib/hooks/useOrgRoleMap";

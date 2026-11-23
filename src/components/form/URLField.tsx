@@ -1,11 +1,11 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
+import { Label } from "@omnidotdev/thornberry/label";
 import { LuX } from "react-icons/lu";
 import { useDebounceValue } from "usehooks-ts";
 
 import Favicon from "@/components/core/Favicon";
 import Field from "@/components/form/Field";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import DEBOUNCE_TIME from "@/lib/constants/debounceTime.constant";
 import { useFieldContext } from "@/lib/hooks/useForm";
 

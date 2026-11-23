@@ -1,6 +1,6 @@
+import { Input } from "@omnidotdev/thornberry/input";
 import { getRouteApi } from "@tanstack/react-router";
 
-import { Input } from "@/components/ui/input";
 import app from "@/lib/config/app.config";
 import useHandleSearch from "@/lib/hooks/useHandleSearch";
 

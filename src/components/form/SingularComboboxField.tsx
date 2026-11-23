@@ -1,6 +1,20 @@
+import { createListCollection } from "@ark-ui/react/combobox";
+import { Portal } from "@ark-ui/react/portal";
+import {
+  ComboboxContent,
+  ComboboxControl,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxItemText,
+  ComboboxPositioner,
+  ComboboxRoot,
+  ComboboxTrigger,
+} from "@omnidotdev/thornberry/combobox";
+import { Label } from "@omnidotdev/thornberry/label";
+import { useMemo } from "react";
+
 import Field from "@/components/form/Field";
-import Combobox from "@/components/ui/combobox";
-import { Label } from "@/components/ui/label";
 import { useFieldContext } from "@/lib/hooks/useForm";
 
 import type { StandardSchemaV1Issue } from "@tanstack/react-form";
@@ -36,24 +50,52 @@ interface Props {
 const SingularComboboxField = ({
   label,
   items,
-  placeholder,
+  placeholder = "Select...",
   disabled,
   errorMap,
   errorProps,
 }: Props) => {
   const { handleChange, state } = useFieldContext<string>();
 
+  const collection = useMemo(() => createListCollection({ items }), [items]);
+
   return (
     <Field className="w-full gap-0" errorMap={errorMap} errorProps={errorProps}>
       {label && <Label className="mb-1.5">{label}</Label>}
 
-      <Combobox
-        items={items}
-        placeholder={placeholder}
-        disabled={disabled}
+      <ComboboxRoot
+        collection={collection}
         value={state.value?.length ? [state.value] : []}
-        onValueChange={(value) => handleChange(value.length ? value[0] : "")}
-      />
+        onValueChange={({ value }) =>
+          handleChange(value.length ? value[0] : "")
+        }
+        disabled={disabled}
+        loopFocus
+      >
+        <ComboboxControl>
+          <ComboboxInput placeholder={placeholder} className="pr-10" />
+          <ComboboxTrigger />
+        </ComboboxControl>
+
+        <Portal>
+          <ComboboxPositioner className="w-(--reference-width)">
+            <ComboboxContent className="max-h-60">
+              {items.length ? (
+                items.map((item) => (
+                  <ComboboxItem key={item.value} item={item}>
+                    <ComboboxItemText>{item.label}</ComboboxItemText>
+                    <ComboboxItemIndicator />
+                  </ComboboxItem>
+                ))
+              ) : (
+                <p className="px-2 py-4 text-center text-muted-foreground text-sm">
+                  No results
+                </p>
+              )}
+            </ComboboxContent>
+          </ComboboxPositioner>
+        </Portal>
+      </ComboboxRoot>
     </Field>
   );
 };

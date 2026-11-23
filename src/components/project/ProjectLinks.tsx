@@ -1,10 +1,5 @@
 import { Portal } from "@ark-ui/react/portal";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { LuEllipsis } from "react-icons/lu";
-
-import Favicon from "@/components/core/Favicon";
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   MenuContent,
   MenuItem,
@@ -12,7 +7,12 @@ import {
   MenuPositioner,
   MenuRoot,
   MenuTrigger,
-} from "@/components/ui/menu";
+} from "@omnidotdev/thornberry/menu";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { LuEllipsis } from "react-icons/lu";
+
+import Favicon from "@/components/core/Favicon";
 import { projectOptions } from "@/lib/options/projects";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 

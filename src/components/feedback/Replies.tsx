@@ -1,14 +1,14 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@omnidotdev/thornberry/collapsible";
 import { useInfiniteQuery, useMutationState } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 
 import SkeletonArray from "@/components/core/SkeletonArray";
 import ReplyCard from "@/components/feedback/ReplyCard";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
-import { Button } from "@/components/ui/button";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import { infiniteRepliesOptions } from "@/lib/options/comments";
 
@@ -86,7 +86,7 @@ const Replies = ({ commentId, ...rest }: Props) => {
 
   return (
     <CollapsibleRoot {...rest}>
-      <CollapsibleContent>
+      <CollapsibleContent className="rounded-none border-0 p-0">
         <div className="mt-4 grid gap-2 sm:ml-10">
           {isLoading ? (
             <SkeletonArray count={5} className="h-[5.25rem]" />
