@@ -1,9 +1,18 @@
 import { CommandPalette as CommandPaletteShell } from "@omnidotdev/thornberry/command-palette";
+import { ShortcutsDialog } from "@omnidotdev/thornberry/shortcuts-dialog";
 import {
   GLOBAL_HOTKEYS,
   hotkeyLabel,
+  useHotkeys,
 } from "@omnidotdev/thornberry/use-hotkeys";
-import { LuColumns3, LuFolderPlus, LuPlus, LuSunMoon } from "react-icons/lu";
+import { useState } from "react";
+import {
+  LuColumns3,
+  LuFolderPlus,
+  LuKeyboard,
+  LuPlus,
+  LuSunMoon,
+} from "react-icons/lu";
 
 import { Hotkeys } from "@/lib/constants/hotkeys.constant";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
@@ -26,6 +35,15 @@ const CommandPalette = () => {
     type: DialogType.CreateProject,
   });
   const cycleViewState = useProjectViewStore((state) => state.cycleViewState);
+
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+
+  // App-wide theme shortcut, bound once here rather than per toggle button.
+  // react-hotkeys-hook ignores form fields by default, so this never fires
+  // while typing
+  useHotkeys(GLOBAL_HOTKEYS.toggleTheme, toggleTheme, [toggleTheme]);
 
   const commands: CommandAction[] = [
     {
@@ -58,16 +76,51 @@ const CommandPalette = () => {
       group: "Preferences",
       icon: LuSunMoon,
       shortcut: hotkeyLabel(GLOBAL_HOTKEYS.toggleTheme),
-      onSelect: () => setTheme(theme === "dark" ? "light" : "dark"),
+      onSelect: toggleTheme,
+    },
+    {
+      id: "keyboard-shortcuts",
+      label: "Keyboard shortcuts",
+      group: "Preferences",
+      icon: LuKeyboard,
+      keywords: ["hotkeys", "keys", "help"],
+      shortcut: hotkeyLabel(GLOBAL_HOTKEYS.showShortcuts),
+      onSelect: () => setShortcutsOpen(true),
     },
   ];
 
   return (
-    <CommandPaletteShell
-      commands={commands}
-      triggerKey={GLOBAL_HOTKEYS.commandPalette}
-      placeholder="Type a command or search..."
-    />
+    <>
+      <CommandPaletteShell
+        commands={commands}
+        triggerKey={GLOBAL_HOTKEYS.commandPalette}
+        placeholder="Type a command or search..."
+      />
+      {/* `?` opens it anywhere; the palette entry opens it too */}
+      <ShortcutsDialog
+        open={shortcutsOpen}
+        onOpenChange={setShortcutsOpen}
+        groups={[
+          {
+            title: "Feedback board",
+            shortcuts: [
+              { keys: Hotkeys.CreatePost, label: "Create feedback" },
+              {
+                keys: Hotkeys.CycleView,
+                label: "Switch view (list, grid, roadmap)",
+              },
+              { keys: Hotkeys.FocusSearch, label: "Search feedback" },
+            ],
+          },
+          {
+            title: "Workspace",
+            shortcuts: [
+              { keys: Hotkeys.CreateProject, label: "Create project" },
+            ],
+          },
+        ]}
+      />
+    </>
   );
 };
 

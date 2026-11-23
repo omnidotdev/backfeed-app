@@ -1,7 +1,6 @@
-import { useHotkeys } from "react-hotkeys-hook";
+import { Button } from "@omnidotdev/thornberry/button";
 import { PiMoonFill as Moon, PiSunFill as Sun } from "react-icons/pi";
 
-import { Button } from "@/components/ui/button";
 import { useTheme } from "@/providers/ThemeProvider";
 
 /**
@@ -12,8 +11,6 @@ const ThemeToggle = () => {
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
-
-  useHotkeys("t", toggleTheme, [toggleTheme]);
 
   return (
     <Button
