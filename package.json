@@ -34,7 +34,7 @@
     "@lexical/react": "^0.53.0",
     "@lexical/rich-text": "^0.53.0",
     "@omnidotdev/providers": "github:omnidotdev/providers#v0.2.0",
-    "@omnidotdev/thornberry": "github:omnidotdev/thornberry#5112736ec23776ac73a4fcf26b234477e7c22169",
+    "@omnidotdev/thornberry": "github:omnidotdev/thornberry#baea091695a4c0ccfce027117180edbe286d3628",
     "@tanstack/react-form": "^1.27.7",
     "@tanstack/react-query": "^5.100.10",
     "@tanstack/react-router": "1.167.4",
