@@ -1,7 +1,8 @@
 import { Button } from "@omnidotdev/thornberry/button";
-import { DialogBackdrop, DialogPortal } from "@omnidotdev/thornberry/dialog";
 import {
+  SheetBackdrop,
   SheetContent,
+  SheetPortal,
   SheetPositioner,
   SheetRoot,
 } from "@omnidotdev/thornberry/sheet";
@@ -31,8 +32,8 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
         open={isDrawerOpen}
         onOpenChange={({ open }) => setIsDrawerOpen(open)}
       >
-        <DialogPortal>
-          <DialogBackdrop />
+        <SheetPortal>
+          <SheetBackdrop />
           <SheetPositioner>
             <SheetContent
               side="left"
@@ -51,7 +52,7 @@ const ProfileSidebar = ({ children }: PropsWithChildren) => {
               </div>
             </SheetContent>
           </SheetPositioner>
-        </DialogPortal>
+        </SheetPortal>
       </SheetRoot>
 
       {/* Main content - full width, no sidebar space reserved */}

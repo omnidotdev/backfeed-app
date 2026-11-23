@@ -1,8 +1,9 @@
 import { Button } from "@omnidotdev/thornberry/button";
-import { DialogBackdrop, DialogPortal } from "@omnidotdev/thornberry/dialog";
 import {
+  SheetBackdrop,
   SheetCloseTrigger,
   SheetContent,
+  SheetPortal,
   SheetPositioner,
   SheetRoot,
   SheetTrigger,
@@ -115,8 +116,8 @@ const HeaderActions = () => {
             </Button>
           </SheetTrigger>
 
-          <DialogPortal>
-            <DialogBackdrop />
+          <SheetPortal>
+            <SheetBackdrop />
             <SheetPositioner>
               <SheetContent
                 side="right"
@@ -168,7 +169,7 @@ const HeaderActions = () => {
                 </div>
               </SheetContent>
             </SheetPositioner>
-          </DialogPortal>
+          </SheetPortal>
         </SheetRoot>
       </div>
     </div>
