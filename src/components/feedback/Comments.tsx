@@ -161,7 +161,7 @@ const Comments = () => {
         ) : (
           <div
             ref={scrollFadeRef}
-            className="mt-4 grid max-h-[36rem] gap-2 overflow-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="mt-4 grid max-h-[36rem] gap-2 overflow-auto"
           >
             {isLoading ? (
               <SkeletonArray count={5} className="h-28" />

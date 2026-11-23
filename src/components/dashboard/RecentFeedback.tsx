@@ -60,7 +60,6 @@ const RecentFeedback = ({ minH }: Props) => {
       ref={rootRef}
       title="Recent Feedback"
       style={minH ? { minHeight: `${minH * 0.25}rem` } : undefined}
-      contentClassName="[scrollbar-width:none]"
     >
       {isError ? (
         <div className="flex h-full items-center justify-center p-8">
