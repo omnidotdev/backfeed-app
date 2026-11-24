@@ -7,6 +7,7 @@ import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { FiUser } from "react-icons/fi";
 
 import signOut from "@/lib/auth/signOut";
+import switchAccount from "@/lib/auth/switchAccount";
 import app from "@/lib/config/app.config";
 import { ACCOUNT_URL, isDevEnv } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
@@ -56,6 +57,7 @@ const AccountInformation = () => {
         image: session.user.image,
       }}
       onSignOut={handleLogout}
+      onSwitchAccount={() => void switchAccount()}
       manageAccountUrl={accountUrl(ACCOUNT_URL) || undefined}
       signOutLabel={app.auth.signOut.label}
       // Opens upward from the bottom of the phone sidebar
