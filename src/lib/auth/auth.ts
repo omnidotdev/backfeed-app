@@ -1,3 +1,4 @@
+import { redactSessionToken } from "@omnidotdev/providers/auth";
 import { getCookie } from "@tanstack/react-start/server";
 import { betterAuth } from "better-auth";
 import { customSession, genericOAuth } from "better-auth/plugins";
@@ -88,6 +89,7 @@ const auth = betterAuth({
         },
       ],
     }),
+    redactSessionToken(),
     customSession(async ({ user, session }) => {
       // Try to get cached auth data (rowId, identityProviderId).
       // This avoids API calls on every request.
