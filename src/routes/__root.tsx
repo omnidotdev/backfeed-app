@@ -27,7 +27,6 @@ import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
 
 import type { QueryClient } from "@tanstack/react-query";
-import type { Session } from "better-auth/types";
 import type { ReactNode } from "react";
 
 interface ExtendedUser {
@@ -42,7 +41,8 @@ interface ExtendedUser {
 
 import type { OrganizationClaim } from "@/lib/auth/getAuth";
 
-interface ExtendedSession extends Omit<Session, "user"> {
+/** The browser-safe session shape returned by `fetchSession` */
+interface ExtendedSession {
   user: ExtendedUser;
   accessToken?: string;
   organizations?: OrganizationClaim[];
