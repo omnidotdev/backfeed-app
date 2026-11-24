@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
 import auth from "@/lib/auth/auth";
+import { toClientSession } from "@/lib/auth/clientSession";
 import { getAuth } from "@/lib/auth/getAuth";
 import { isSessionDegraded } from "@/lib/auth/sessionState";
 import {
@@ -57,7 +58,10 @@ const loadSession = async (forceRefreshOrgs = false) => {
   // organizations empty. This is distinct from a genuinely workspace-less user
   // (who has a valid access token), and the workspaces page uses it to prompt a
   // re-login instead of the silent "Create a workspace to get started" state
-  return { session, authDegraded: isSessionDegraded(session) };
+  return {
+    session: toClientSession(session),
+    authDegraded: isSessionDegraded(session),
+  };
 };
 
 /**
