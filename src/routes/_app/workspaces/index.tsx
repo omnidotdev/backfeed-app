@@ -15,6 +15,7 @@ import { LuLayers, LuPlus, LuRefreshCw, LuTriangleAlert } from "react-icons/lu";
 
 import { buttonVariants } from "@/components/ui/button";
 import authClient from "@/lib/auth/authClient";
+import useHubLoginHint from "@/lib/auth/useHubLoginHint";
 import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import { workspaceMetricsOptions } from "@/lib/options/workspaces";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -84,11 +85,12 @@ export const Route = createFileRoute("/_app/workspaces/")({
 function WorkspacesPage() {
   const router = useRouter();
   const { organizations: workspaces, authDegraded } = Route.useLoaderData();
+  const loginHint = useHubLoginHint();
 
   // The account hub owns workspace creation; link out to it. Rendered only when
   // the hub URL is configured (optional env), so a missing config degrades to no
   // button rather than a dead link.
-  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL);
+  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL, { loginHint });
 
   // Refresh failed and we have nothing to show: prompt a re-login rather than
   // the create-workspace empty state the user cannot act on.

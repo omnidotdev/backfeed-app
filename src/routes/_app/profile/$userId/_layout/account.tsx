@@ -8,6 +8,8 @@ import NotificationSettings from "@/components/profile/NotificationSettings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import useHubLoginHint from "@/lib/auth/useHubLoginHint";
+import { hubProfileUrl } from "@/lib/billing/hubLinks";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL, CONSOLE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -29,6 +31,7 @@ export const Route = createFileRoute("/_app/profile/$userId/_layout/account")({
 function UserAccountPage() {
   const { user } = Route.useRouteContext();
   const { userId } = Route.useParams();
+  const loginHint = useHubLoginHint();
 
   const [showEmail, setShowEmail] = useState(false);
 
@@ -70,7 +73,9 @@ function UserAccountPage() {
             icon: <LuPencil />,
             linkOptions: {
               // Account/profile management lives in the account console
-              href: CONSOLE_URL ? `${CONSOLE_URL}/profile` : AUTH_BASE_URL!,
+              href: CONSOLE_URL
+                ? hubProfileUrl(CONSOLE_URL, loginHint)
+                : AUTH_BASE_URL!,
             },
           },
         ],
