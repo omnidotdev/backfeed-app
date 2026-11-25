@@ -8,10 +8,13 @@ import { FiUser } from "react-icons/fi";
 
 import signOut from "@/lib/auth/signOut";
 import switchAccount from "@/lib/auth/switchAccount";
+import { useMenuAccounts } from "@/lib/auth/useMenuAccounts";
 import app from "@/lib/config/app.config";
-import { ACCOUNT_URL, isDevEnv } from "@/lib/config/env.config";
+import { ACCOUNT_URL, AUTH_BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import useViewportSize from "@/lib/hooks/useViewportSize";
 import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
+
+import type { IdpLogoutConfig } from "@omnidotdev/providers/auth";
 
 /**
  * The signed-in user's account menu: the standard Omni account menu, as the
@@ -20,6 +23,8 @@ import useDialogStore, { DialogType } from "@/lib/store/useDialogStore";
 const AccountInformation = () => {
   const { session } = useRouteContext({ from: "__root__" });
   const navigate = useNavigate();
+  // The other accounts signed in on this browser, one click to switch to
+  const accounts = useMenuAccounts(AUTH_BASE_URL, !!session);
   const isWideViewport = useViewportSize({
     minWidth: "40rem",
   });
@@ -38,9 +43,11 @@ const AccountInformation = () => {
     });
   };
 
-  const handleLogout = async () => {
+  const handleLogout = async (
+    signOutOf: IdpLogoutConfig["accounts"] = "current",
+  ) => {
     try {
-      await signOut();
+      await signOut({ accounts: signOutOf });
     } catch (err) {
       if (isDevEnv) console.error(err);
     }
@@ -56,9 +63,16 @@ const AccountInformation = () => {
         email: session.user.email,
         image: session.user.image,
       }}
-      onSignOut={handleLogout}
+      onSignOut={() => void handleLogout("current")}
+      onSignOutAll={() => void handleLogout("all")}
       onSwitchAccount={() => void switchAccount()}
-      manageAccountUrl={accountUrl(ACCOUNT_URL) || undefined}
+      accounts={accounts}
+      onSelectAccount={(account) => void switchAccount(account.id)}
+      manageAccountUrl={
+        accountUrl(ACCOUNT_URL, {
+          loginHint: session.user.identityProviderId,
+        }) || undefined
+      }
       signOutLabel={app.auth.signOut.label}
       // Opens upward from the bottom of the phone sidebar
       positioning={isWideViewport ? undefined : { placement: "top" }}
