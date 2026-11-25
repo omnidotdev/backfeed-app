@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  hubProfileUrl,
   manageSubscriptionUrl,
   upgradePlanUrl,
   workspaceSettingsUrl,
@@ -54,10 +55,40 @@ describe("upgradePlanUrl", () => {
     });
   });
 
+  test("opens the hub as the signed-in account", () => {
+    expect(
+      params(
+        upgradePlanUrl(HUB, BACKFEED, {
+          plan: "pro",
+          interval: "month",
+          workspaceSlug: "acme",
+          loginHint: "user-123",
+        }),
+      ),
+    ).toHaveProperty("login_hint", "user-123");
+  });
+
   test("is empty when no account hub is configured", () => {
     expect(
       upgradePlanUrl(undefined, BACKFEED, { plan: "pro", interval: "month" }),
     ).toBe("");
+  });
+});
+
+describe("hubProfileUrl", () => {
+  test("points at the account hub's profile page", () => {
+    expect(hubProfileUrl(`${HUB}/`)).toBe(`${HUB}/profile`);
+  });
+
+  test("opens the hub as the signed-in account", () => {
+    const url = hubProfileUrl(HUB, "user-123");
+
+    expect(new URL(url).pathname).toBe("/profile");
+    expect(params(url)).toEqual({ login_hint: "user-123" });
+  });
+
+  test("is empty when no account hub is configured", () => {
+    expect(hubProfileUrl(undefined, "user-123")).toBe("");
   });
 });
 
@@ -72,6 +103,12 @@ describe("manageSubscriptionUrl", () => {
       manage: "1",
       return: `${BACKFEED}/@acme/~/settings`,
     });
+  });
+
+  test("opens the hub as the signed-in account", () => {
+    expect(
+      params(manageSubscriptionUrl(HUB, BACKFEED, "acme", "user-123")),
+    ).toHaveProperty("login_hint", "user-123");
   });
 
   test("is empty when no account hub is configured", () => {

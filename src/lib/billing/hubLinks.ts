@@ -7,8 +7,9 @@ import type { HubPlanInterval } from "@omnidotdev/providers/react";
  * product sells plans. Backfeed shows its own pricing, but its Upgrade and
  * Manage subscription actions link to the hub, which confirms the plan (names
  * and prices from Aether), runs checkout or the billing portal, and returns
- * here. Each helper is empty when no account hub is configured, so the action
- * is hidden rather than dead
+ * here. Each link carries the signed-in account's subject as `loginHint`, so
+ * the hub opens as the same account. Each helper is empty when no account hub
+ * is configured, so the action is hidden rather than dead
  */
 
 const PRODUCT = "backfeed";
@@ -49,7 +50,14 @@ export const upgradePlanUrl = (
     plan,
     interval,
     workspaceSlug,
-  }: { plan: string; interval: HubPlanInterval; workspaceSlug?: string },
+    loginHint,
+  }: {
+    plan: string;
+    interval: HubPlanInterval;
+    workspaceSlug?: string;
+    /** The signed-in account's subject */
+    loginHint?: string | null;
+  },
 ): string => {
   const origin = appOrigin(baseUrl);
 
@@ -63,7 +71,27 @@ export const upgradePlanUrl = (
       : origin
         ? `${origin}/pricing`
         : undefined,
+    loginHint,
   });
+};
+
+/**
+ * The account hub's profile page. The hub link helpers have no profile page,
+ * so this one link is built here, carrying the same `login_hint` they would.
+ * Empty when no account hub is configured
+ * @param accountBaseUrl - Account hub base URL
+ * @param loginHint - The signed-in account's subject
+ */
+export const hubProfileUrl = (
+  accountBaseUrl: string | undefined,
+  loginHint?: string | null,
+): string => {
+  if (!accountBaseUrl) return "";
+
+  const url = `${accountBaseUrl.replace(/\/+$/, "")}/profile`;
+  if (!loginHint) return url;
+
+  return `${url}?${new URLSearchParams({ login_hint: loginHint })}`;
 };
 
 /**
@@ -71,14 +99,17 @@ export const upgradePlanUrl = (
  * invoices) on the account hub, returning to the workspace's settings page
  * @param accountBaseUrl - Account hub base URL
  * @param baseUrl - Backfeed's base URL, for the return
+ * @param loginHint - The signed-in account's subject
  */
 export const manageSubscriptionUrl = (
   accountBaseUrl: string | undefined,
   baseUrl: string | undefined,
   workspaceSlug: string,
+  loginHint?: string | null,
 ): string =>
   hubManageUrl(accountBaseUrl, {
     product: PRODUCT,
     workspace: workspaceSlug,
     returnUrl: workspaceSettingsUrl(baseUrl, workspaceSlug),
+    loginHint,
   });

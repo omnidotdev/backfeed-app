@@ -16,6 +16,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
+import useHubLoginHint from "@/lib/auth/useHubLoginHint";
 import { manageSubscriptionUrl, upgradePlanUrl } from "@/lib/billing/hubLinks";
 import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -46,6 +47,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
   const { workspaceSlug } = settingsRoute.useParams();
   const { isOwner, workspaceName } = settingsRoute.useRouteContext();
   const { subscription, entitlements } = settingsRoute.useLoaderData();
+  const loginHint = useHubLoginHint();
 
   const subscriptionPrice = prices.find(
     (price) =>
@@ -64,6 +66,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
     ACCOUNT_URL,
     BASE_URL,
     workspaceSlug,
+    loginHint,
   );
 
   // Buy the picked plan for this workspace on the account hub, which confirms
@@ -76,6 +79,7 @@ const WorkspaceSettings = ({ prices }: Props) => {
       plan: price.metadata.tier,
       interval: price.recurring?.interval === "year" ? "year" : "month",
       workspaceSlug,
+      loginHint,
     });
 
     if (href) window.location.assign(href);

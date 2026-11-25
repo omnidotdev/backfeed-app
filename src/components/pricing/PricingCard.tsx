@@ -57,6 +57,8 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
   const isPerMonthPricing = price?.recurring?.interval === "month";
 
   const tier = (price?.metadata.tier as Tier) ?? Tier.Free;
+  // Hub links open the hub as the account Backfeed is signed in as
+  const loginHint = session?.user?.identityProviderId;
 
   const isFreeTier = tier === Tier.Free;
   const isTeamTier = tier === Tier.Team;
@@ -103,11 +105,12 @@ const PricingCard = ({ price, orgSubscriptions = {}, ...rest }: Props) => {
       plan: tier,
       interval,
       workspaceSlug,
+      loginHint,
     });
 
   // A new workspace is created on the account hub's workspaces console, the
   // one place workspaces are made
-  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL);
+  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL, { loginHint });
 
   // Handle workspace selection from dropdown
   const handleWorkspaceSelect = (workspaceId: string) => {
