@@ -10,16 +10,22 @@ import type { EntitlementsResponse } from "@/lib/providers/billing";
 /** Feature keys for Backfeed entitlements */
 export const FeatureKey = {
   MaxProjects: "max_projects",
-  MaxUniqueUsers: "max_unique_users",
+  // catalog SSOT key; previously "max_unique_users", which never resolved, so
+  // the form fell back to a stale cap and hid after 15 unique submitters
+  MaxFeedbackUsers: "max_feedback_users",
   // must match the catalog SSOT key (omni-api planConfigs) and the backfeed-api
   // entitlement check; previously "max_comments", which never resolved
   MaxComments: "max_comments_per_post",
 } as const;
 
-/** FALLBACK ONLY -- source of truth is Omni API plan_feature */
+/**
+ * FALLBACK ONLY -- source of truth is Omni API plan_feature. Each value mirrors
+ * the catalog free tier (omni-api planConfigs, backfeed block)
+ */
 const FALLBACK_LIMITS: Record<string, number> = {
   [FeatureKey.MaxProjects]: MAX_NUMBER_OF_PROJECTS,
-  [FeatureKey.MaxUniqueUsers]: 15,
+  // feedback is unlimited on every tier (-1)
+  [FeatureKey.MaxFeedbackUsers]: -1,
   // catalog free tier = 50; paid tiers are unlimited (-1) via entitlements
   [FeatureKey.MaxComments]: 50,
 };
