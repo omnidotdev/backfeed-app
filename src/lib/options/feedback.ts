@@ -12,6 +12,7 @@ import {
   useProjectQuery,
 } from "@/generated/graphql";
 import { graphqlFetch } from "@/lib/graphql/graphqlFetch";
+import { canCreateFeedbackFromData } from "@/lib/options/canCreateFeedback";
 import { FeatureKey, checkLimit } from "@/server/functions/entitlements";
 
 import type {
@@ -21,9 +22,9 @@ import type {
   PostsQueryVariables,
 } from "@/generated/graphql";
 
-/** Maximum unique users allowed to submit feedback on free tier */
-// FALLBACK ONLY -- source of truth is Omni API plan_feature (kind="operational") via Aether entitlements
-const MAX_FREE_TIER_UNIQUE_USERS = 15;
+/** Maximum unique users allowed to submit feedback on free tier (-1 = unlimited) */
+// FALLBACK ONLY -- source of truth is Omni API plan_feature (kind="operational") via Aether entitlements; mirrors the catalog max_feedback_users
+const MAX_FREE_TIER_FEEDBACK_USERS = -1;
 
 export const feedbackByIdOptions = (variables: FeedbackByIdQueryVariables) =>
   queryOptions({
@@ -58,7 +59,7 @@ export const infiniteFeedbackOptions = (variables: PostsQueryVariables) =>
 
 /**
  * Check if user can create feedback based on entitlement limits.
- * Falls back to hardcoded MAX_FREE_TIER_UNIQUE_USERS if Aether is unreachable.
+ * Falls back to hardcoded MAX_FREE_TIER_FEEDBACK_USERS if Aether is unreachable.
  */
 export const freeTierFeedbackOptions = ({
   organizationId,
@@ -87,13 +88,13 @@ export const freeTierFeedbackOptions = ({
         const hasUserSubmittedFeedback = !!project?.userPosts.nodes.length;
 
         // Check entitlement limit via Aether (falls back to hardcoded constant)
-        let userLimit = MAX_FREE_TIER_UNIQUE_USERS;
+        let userLimit = MAX_FREE_TIER_FEEDBACK_USERS;
 
         try {
           const limitResult = await checkLimit({
             data: {
               organizationId,
-              featureKey: FeatureKey.MaxUniqueUsers,
+              featureKey: FeatureKey.MaxFeedbackUsers,
               currentCount: activeUserCount,
             },
           });
@@ -113,12 +114,5 @@ export const freeTierFeedbackOptions = ({
       }
     },
     placeholderData: keepPreviousData,
-    select: (data) => {
-      if (!data) return false;
-
-      // Allow if user already submitted feedback, or under user limit
-      return (
-        data.hasUserSubmittedFeedback || data.activeUserCount < data.userLimit
-      );
-    },
+    select: canCreateFeedbackFromData,
   });

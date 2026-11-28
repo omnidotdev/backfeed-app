@@ -14,170 +14,115 @@ import app from "@/lib/config/app.config";
 
 import type { ComponentProps } from "react";
 
-interface Feature {
+/** Tier ID, matching the catalog tier names. */
+type TierId = "free" | "pro" | "team";
+
+/** A cell value: a check/cross, or a short limit label. */
+type CellValue = boolean | string;
+
+interface FeatureRow {
+  /** Feature ID. */
+  id: string;
   /** Human-readable label. */
   label: string;
-  /** Value. */
-  value: boolean;
   /** Whether the feature is coming soon. */
   comingSoon?: boolean;
+  /** Value per tier. */
+  values: Record<TierId, CellValue>;
 }
 
-/**
- * Features common to all tiers.
- */
-const COMMON_FEATURES: Record<string, Feature> = {
-  gdpr: { label: app.pricingPage.pricingMatrix.features.gdpr, value: true },
-  communitySupport: {
-    label: app.pricingPage.pricingMatrix.features.communitySupport,
-    value: true,
-  },
-};
-
-const PRO_FEATURES: Record<string, Feature> = {
-  unlimitedFeedback: {
-    label: app.pricingPage.pricingMatrix.features.unlimitedFeedback,
-    value: true,
-  },
-};
-
-const TEAM_FEATURES: Record<string, Feature> = {
-  ...COMMON_FEATURES,
-  ...PRO_FEATURES,
-  unlimitedProjects: {
-    label: app.pricingPage.pricingMatrix.features.unlimitedProjects,
-    value: true,
-  },
-  webhooks: {
-    label: app.pricingPage.pricingMatrix.features.webhooks,
-    value: true,
-    comingSoon: true,
-  },
-  apiAccess: {
-    label: app.pricingPage.pricingMatrix.features.apiAccess,
-    value: true,
-    comingSoon: true,
-  },
-  customTags: {
-    label: app.pricingPage.pricingMatrix.features.customTags,
-    value: true,
-    comingSoon: true,
-  },
-  customCategories: {
-    label: app.pricingPage.pricingMatrix.features.customCategories,
-    value: true,
-    comingSoon: true,
-  },
-  internalCollaborationTools: {
-    label: app.pricingPage.pricingMatrix.features.internalCollaborationTools,
-    value: true,
-    comingSoon: true,
-  },
-  thirdPartyIntegrations: {
-    label: app.pricingPage.pricingMatrix.features.thirdPartyIntegrations,
-    value: true,
-    comingSoon: true,
-  },
-};
+const { features: labels, values: limitLabels } = app.pricingPage.pricingMatrix;
 
 /**
- * Per-tier product information.
+ * Tiers shown in the matrix. Mirrors the catalog SSOT tiers exactly (omni-api
+ * planConfigs, backfeed block); there is no tier beyond Team
  */
-const tiers: {
-  /** ID. */
-  id: string;
-  /** Human-readable name. */
-  name?: string;
-  /** Features. */
-  features: Record<string, Feature>;
-}[] = [
-  {
-    id: "free",
-    name: "Free",
-    features: COMMON_FEATURES,
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    features: {
-      ...COMMON_FEATURES,
-      ...PRO_FEATURES,
-    },
-  },
-  {
-    id: "team",
-    name: "Team",
-    features: {
-      ...COMMON_FEATURES,
-      ...PRO_FEATURES,
-      ...TEAM_FEATURES,
-    },
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    features: {
-      ...COMMON_FEATURES,
-      ...PRO_FEATURES,
-      ...TEAM_FEATURES,
-      customAnalytics: {
-        label: app.pricingPage.pricingMatrix.features.customAnalytics,
-        value: true,
-        comingSoon: true,
-      },
-      customBranding: {
-        label: app.pricingPage.pricingMatrix.features.customBranding,
-        value: true,
-        comingSoon: true,
-      },
-      customSso: {
-        label: app.pricingPage.pricingMatrix.features.customSso,
-        value: true,
-        comingSoon: true,
-      },
-      customDataRetentionPolicies: {
-        label: app.pricingPage.pricingMatrix.features.customData,
-        value: true,
-        comingSoon: true,
-      },
-      customOnboardingTraining: {
-        label: app.pricingPage.pricingMatrix.features.customOnboardingTraining,
-        value: true,
-        comingSoon: true,
-      },
-      slaBackedSupport: {
-        label: app.pricingPage.pricingMatrix.features.slaBackedSupport,
-        value: true,
-        comingSoon: true,
-      },
-      selfHostingAssistance: {
-        label: app.pricingPage.pricingMatrix.features.selfHostingAssistance,
-        value: true,
-        comingSoon: true,
-      },
-      integrationSupportForInternalTools: {
-        label:
-          app.pricingPage.pricingMatrix.features
-            .integrationSupportForInternalTools,
-        value: true,
-        comingSoon: true,
-      },
-      customAiBasedFeedbackAnalysis: {
-        label:
-          app.pricingPage.pricingMatrix.features.customAiBasedFeedbackAnalysis,
-        value: true,
-        comingSoon: true,
-      },
-    },
-  },
-] as const;
+export const PRICING_MATRIX_TIERS: { id: TierId; name: string }[] = [
+  { id: "free", name: "Free" },
+  { id: "pro", name: "Pro" },
+  { id: "team", name: "Team" },
+];
 
-const allFeatures = Array.from(
-  new Set(tiers.flatMap(({ features }) => Object.keys(features))),
-);
+/**
+ * Feature rows. Each row mirrors a catalog feature line or operational limit
+ * (omni-api planConfigs, backfeed block); edit the catalog first, then this
+ * list. "Coming soon" follows the catalog's own markers
+ */
+export const PRICING_MATRIX_ROWS: FeatureRow[] = [
+  {
+    id: "projects",
+    label: labels.projects,
+    values: {
+      free: limitLabels.upToTwo,
+      pro: limitLabels.upToTen,
+      team: limitLabels.unlimited,
+    },
+  },
+  {
+    id: "unlimitedFeedback",
+    label: labels.unlimitedFeedback,
+    values: { free: true, pro: true, team: true },
+  },
+  {
+    id: "feedbackCapture",
+    label: labels.feedbackCapture,
+    values: { free: true, pro: true, team: true },
+  },
+  {
+    id: "members",
+    label: labels.members,
+    values: {
+      free: limitLabels.upToFive,
+      pro: limitLabels.unlimited,
+      team: limitLabels.unlimited,
+    },
+  },
+  {
+    id: "aiTriage",
+    label: labels.aiTriage,
+    comingSoon: true,
+    values: { free: false, pro: true, team: limitLabels.largerAllowance },
+  },
+  {
+    id: "multiSourceIngestion",
+    label: labels.multiSourceIngestion,
+    comingSoon: true,
+    values: { free: false, pro: false, team: true },
+  },
+  {
+    id: "themeClustering",
+    label: labels.themeClustering,
+    comingSoon: true,
+    values: { free: false, pro: false, team: true },
+  },
+  {
+    id: "productReviews",
+    label: labels.productReviews,
+    comingSoon: true,
+    values: { free: false, pro: false, team: true },
+  },
+  {
+    id: "teamCollaboration",
+    label: labels.teamCollaboration,
+    comingSoon: true,
+    values: { free: false, pro: false, team: true },
+  },
+  {
+    id: "apiAccess",
+    label: labels.apiAccess,
+    comingSoon: true,
+    values: { free: false, pro: false, team: true },
+  },
+  {
+    id: "customBranding",
+    label: labels.customBranding,
+    comingSoon: true,
+    values: { free: false, pro: false, team: true },
+  },
+];
 
 const headerCellClassName =
-  "w-[15%] px-3 py-4 text-center font-bold text-base md:text-lg whitespace-nowrap";
+  "w-[20%] px-3 py-4 text-center font-bold text-base md:text-lg whitespace-nowrap";
 
 /**
  * Pricing feature matrix.
@@ -196,62 +141,63 @@ const PricingMatrix = (props: ComponentProps<typeof Table>) => (
             {app.pricingPage.pricingMatrix.feature}
           </TableHead>
 
-          {tiers
-            .filter(({ name }) => name)
-            .map(({ name }) => (
-              <TableHead key={name} className={headerCellClassName}>
-                {name}
-              </TableHead>
-            ))}
+          {PRICING_MATRIX_TIERS.map(({ id, name }) => (
+            <TableHead key={id} className={headerCellClassName}>
+              {name}
+            </TableHead>
+          ))}
         </TableRow>
       </TableHeader>
 
       <TableBody>
-        {allFeatures.map((feature) => {
-          const featureInfo = tiers.find((tier) => tier.features[feature])
-            ?.features[feature];
-
-          return (
-            <TableRow
-              key={feature}
-              className="border-border/60 bg-background hover:bg-background odd:bg-background-subtle/50 odd:hover:bg-background-subtle/50"
-            >
-              {/* keep the cell as a real table cell (no `flex` on the <td>, which
+        {PRICING_MATRIX_ROWS.map((row) => (
+          <TableRow
+            key={row.id}
+            className="border-border/60 bg-background hover:bg-background odd:bg-background-subtle/50 odd:hover:bg-background-subtle/50"
+          >
+            {/* keep the cell as a real table cell (no `flex` on the <td>, which
                   would break column alignment with the header); put the flex on an
                   inner wrapper instead */}
-              <TableCell className="px-4 py-3.5 font-medium text-sm md:text-base">
-                <div className="flex items-center gap-1.5">
-                  <span>{featureInfo?.label || feature}</span>
+            <TableCell className="px-4 py-3.5 font-medium text-sm md:text-base">
+              <div className="flex items-center gap-1.5">
+                <span>{row.label}</span>
 
-                  {featureInfo?.comingSoon && (
-                    <Tooltip
-                      positioning={{ placement: "top" }}
-                      trigger={
-                        <HiOutlineWrenchScrewdriver className="cursor-pointer text-foreground-subtle" />
-                      }
-                      triggerProps={{
-                        "aria-label": app.info.comingSoon.label,
-                        className: "cursor-pointer bg-transparent",
-                      }}
-                    >
-                      {app.info.comingSoon.label}
-                    </Tooltip>
-                  )}
-                </div>
-              </TableCell>
+                {row.comingSoon && (
+                  <Tooltip
+                    positioning={{ placement: "top" }}
+                    trigger={
+                      <HiOutlineWrenchScrewdriver className="cursor-pointer text-foreground-subtle" />
+                    }
+                    triggerProps={{
+                      "aria-label": app.info.comingSoon.label,
+                      className: "cursor-pointer bg-transparent",
+                    }}
+                  >
+                    {app.info.comingSoon.label}
+                  </Tooltip>
+                )}
+              </div>
+            </TableCell>
 
-              {tiers.map(({ id, features }) => (
+            {PRICING_MATRIX_TIERS.map(({ id }) => {
+              const value = row.values[id];
+
+              return (
                 <TableCell key={id} className="px-3 py-3.5 text-center">
-                  {features[feature]?.value ? (
+                  {typeof value === "string" ? (
+                    <span className="font-medium text-sm md:text-base">
+                      {value}
+                    </span>
+                  ) : value ? (
                     <FaCheck className="mx-auto size-4 text-[var(--colors-green-500)] md:size-[1.1rem]" />
                   ) : (
                     <FaX className="mx-auto size-3.5 text-foreground-subtle/40 md:size-4" />
                   )}
                 </TableCell>
-              ))}
-            </TableRow>
-          );
-        })}
+              );
+            })}
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   </div>
