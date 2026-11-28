@@ -10,7 +10,7 @@ export const FREE_PRODUCT_DETAILS = {
     { name: "Up to 2 projects" },
     { name: "Unlimited feedback submissions" },
     { name: "In-app & email feedback capture" },
-    { name: "Up to 5 members" },
+    { name: "Unlimited members" },
   ],
 };
 

@@ -670,7 +670,6 @@ const app = {
       },
       values: {
         upToTwo: "Up to 2",
-        upToFive: "Up to 5",
         upToTen: "Up to 10",
         unlimited: "Unlimited",
         largerAllowance: "Larger allowance",
