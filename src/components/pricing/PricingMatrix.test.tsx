@@ -33,8 +33,8 @@ describe("PricingMatrix", () => {
 
     expect(freeFeatures).toContain("Up to 2 projects");
     expect(free("projects")).toBe("Up to 2");
-    expect(freeFeatures).toContain("Up to 5 members");
-    expect(free("members")).toBe("Up to 5");
+    expect(freeFeatures).toContain("Unlimited members");
+    expect(free("members")).toBe("Unlimited");
     expect(freeFeatures).toContain("Unlimited feedback submissions");
     expect(free("unlimitedFeedback")).toBe(true);
   });

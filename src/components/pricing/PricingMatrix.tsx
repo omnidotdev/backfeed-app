@@ -72,7 +72,7 @@ export const PRICING_MATRIX_ROWS: FeatureRow[] = [
     id: "members",
     label: labels.members,
     values: {
-      free: limitLabels.upToFive,
+      free: limitLabels.unlimited,
       pro: limitLabels.unlimited,
       team: limitLabels.unlimited,
     },
